@@ -96,6 +96,9 @@ export const App: React.FC = () => {
   // When order is successfully created in CartDrawer
   const handleOrderSuccess = (order: Order) => {
     setSelectedOrderCode(order.id);
+    setIsCartOpen(false);
+    setActiveTab('tracking');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Welcome modal close / skip
@@ -152,8 +155,8 @@ export const App: React.FC = () => {
         ) : (
           <div className="pt-6 sm:pt-8">
             <OrderStatusView
-              key={`tracking-${dataVersion}-${selectedOrderCode}`}
-              initialOrderCode={selectedOrderCode}
+              key={`tracking-${dataVersion}-${selectedOrderCode || 'CONAN-001'}`}
+              initialOrderCode={selectedOrderCode || 'CONAN-001'}
               onSelectOrder={(code) => setSelectedOrderCode(code)}
             />
           </div>
