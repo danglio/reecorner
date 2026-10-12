@@ -302,7 +302,7 @@ function setStorageItem<T>(key: string, value: T): void {
 // 4. Products API
 export function getProducts(): Product[] {
   const cached = getStorageItem<Product[]>(STORAGE_KEYS.PRODUCTS);
-  if (Array.isArray(cached) && cached.length > 0) {
+  if (cached !== null && Array.isArray(cached)) {
     return cached;
   }
   setStorageItem(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
@@ -336,7 +336,7 @@ export function deleteProduct(id: string): void {
 // 5. Orders API
 export function getOrders(): Order[] {
   const cached = getStorageItem<Order[]>(STORAGE_KEYS.ORDERS);
-  if (Array.isArray(cached) && cached.length > 0) {
+  if (cached !== null && Array.isArray(cached)) {
     return cached;
   }
   setStorageItem(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);

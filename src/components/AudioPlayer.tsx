@@ -185,7 +185,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     if (!audio) return;
 
     try {
-      audio.volume = isMuted ? 0 : volume;
       await audio.play();
       setAutoplayBlocked(false);
       if (!isControlled) {
@@ -200,7 +199,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         // Autoplay policy waiting for user gesture
       }
     }
-  }, [isControlled, isMuted, onToggle, volume]);
+  }, [isControlled, onToggle]);
 
   // Safe pause helper
   const safePause = useCallback(() => {

@@ -53,8 +53,8 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="text-conan-gold">CONAN SHOP</span>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-slate-400 font-medium">
-              <span className="hidden xs:inline">Văn Phòng Thám Tử</span>
-              <span className="hidden xs:inline text-conan-gold/60">•</span>
+              <span className="hidden sm:inline">Văn Phòng Thám Tử</span>
+              <span className="hidden sm:inline text-conan-gold/60">•</span>
               <span>Hồ Sơ & Thẻ Bài</span>
             </div>
           </div>
