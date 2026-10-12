@@ -137,8 +137,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 4 * 1024 * 1024) {
-      alert('Vui lòng chọn ảnh có dung lượng nhỏ hơn 4MB.');
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Vui lòng chọn ảnh có dung lượng nhỏ hơn 2MB để tối ưu bộ nhớ trình duyệt.');
+      e.target.value = '';
       return;
     }
 
@@ -147,6 +148,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       if (typeof reader.result === 'string') {
         setProductForm(prev => ({ ...prev, image: reader.result as string }));
       }
+      e.target.value = '';
     };
     reader.readAsDataURL(file);
   };
@@ -173,7 +175,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       originalPrice: productForm.originalPrice ? Number(productForm.originalPrice) : undefined,
       description: productForm.description.trim(),
       image: imageToSave,
-      inStock: productForm.inStock
+      inStock: productForm.inStock,
+      rating: editingProduct?.rating ?? 5.0
     };
 
     saveProduct(productData);
@@ -680,6 +683,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                               <td className="py-3 px-4">
                                 <div className="flex items-center gap-1.5">
                                   <input
+                                    key={`${p.id}-${p.price}`}
                                     type="number"
                                     step={1000}
                                     defaultValue={p.price}
