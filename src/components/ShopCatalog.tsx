@@ -278,6 +278,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                     onError={(e) => {
                       // Fallback image in case of broken link
                       const target = e.currentTarget;
+                      target.onerror = null;
                       target.src =
                         'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80';
                     }}

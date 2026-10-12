@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   X,
   Trash2,
@@ -101,6 +101,34 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const totalQuantity = useMemo(() => {
     return normalizedItems.reduce((sum, item) => sum + item.quantity, 0);
   }, [normalizedItems]);
+
+  const handleClose = useCallback(() => {
+    setCreatedOrder(null);
+    onClose();
+  }, [onClose]);
+
+  // Reset created order state when drawer is closed
+  useEffect(() => {
+    if (!isOpen) {
+      setCreatedOrder(null);
+    }
+  }, [isOpen]);
+
+  // Handle Escape key to close drawer
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, handleClose]);
 
   if (!isOpen) return null;
 
@@ -210,7 +238,7 @@ ${itemsListText}
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/70 backdrop-blur-md transition-opacity duration-300"
-        onClick={onClose}
+        onClick={handleClose}
       />
 
       {/* Drawer Container */}
@@ -238,7 +266,7 @@ ${itemsListText}
             </div>
 
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
               title="Đóng giỏ hàng"
             >
@@ -305,10 +333,7 @@ ${itemsListText}
 
                 <div className="pt-2 flex flex-col gap-2">
                   <button
-                    onClick={() => {
-                      setCreatedOrder(null);
-                      onClose();
-                    }}
+                    onClick={handleClose}
                     className="w-full py-3 rounded-xl bg-gradient-to-r from-conan-gold to-conan-gold-dark text-slate-950 font-bold text-sm shadow-lg shadow-conan-gold/20 hover:brightness-110 transition-all"
                   >
                     Hoàn tất & Tiếp tục khám phá
@@ -328,7 +353,7 @@ ${itemsListText}
                   </p>
                 </div>
                 <button
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="px-5 py-2.5 rounded-xl bg-conan-gold text-slate-950 font-bold text-xs hover:brightness-110 transition-all"
                 >
                   Khám phá cửa hàng ngay
@@ -361,6 +386,7 @@ ${itemsListText}
                           alt={item.name}
                           className="w-14 h-14 rounded-lg object-cover flex-shrink-0 bg-slate-950 border border-white/10"
                           onError={(e) => {
+                            e.currentTarget.onerror = null;
                             e.currentTarget.src =
                               'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80';
                           }}
