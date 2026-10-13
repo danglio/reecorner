@@ -212,9 +212,9 @@ export const OrderStatusView: React.FC<OrderStatusViewProps> = ({
             <div className="md:col-span-3 md:self-end">
               <button
                 type="submit"
-                className="w-full py-3 px-5 rounded-xl bg-gradient-to-r from-conan-red to-conan-red-hover hover:from-conan-red-hover hover:to-conan-red text-white font-bold text-sm flex items-center justify-center space-x-2 shadow-lg shadow-conan-red/30 transition-all active:scale-[0.98] glow-red"
+                className="w-full py-3 px-5 rounded-xl bg-gradient-to-r from-breezy-blue to-[#DCEBFA] hover:from-[#DCEBFA] hover:to-breezy-blue text-navy-night font-black text-sm flex items-center justify-center space-x-2 shadow-lg shadow-breezy-blue/25 border border-breezy-blue transition-all active:scale-[0.98] glow-breezy cursor-pointer"
               >
-                <Search className="w-4 h-4" />
+                <Search className="w-4 h-4 text-navy-night stroke-[2.5]" />
                 <span>TRA CỨU TIẾN ĐỘ</span>
               </button>
             </div>

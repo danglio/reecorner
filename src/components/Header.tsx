@@ -38,9 +38,9 @@ export const Header: React.FC<HeaderProps> = ({
           title="Về trang chủ Cửa hàng Conan"
         >
           {/* Logo Badge Icon */}
-          <div className="relative flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-conan-blue-dark via-conan-navy to-conan-navy-deep border border-conan-gold/40 shadow-md group-hover:border-conan-gold group-hover:glow-gold transition-all duration-300">
-            <ConanBowtieIcon className="w-5 h-5 sm:w-6 sm:h-6" isAnimated={isPlaying} />
-            <div className="absolute -bottom-1 -right-1 p-0.5 rounded-full bg-conan-gold text-conan-navy shadow-sm">
+          <div className="relative flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#0D2C5B] via-[#051F45] to-[#020C1C] border border-breezy-blue/40 shadow-md group-hover:border-breezy-blue group-hover:glow-breezy transition-all duration-300">
+            <ConanBowtieIcon className="w-5 h-5 sm:w-6 sm:h-6 text-breezy-blue" isAnimated={isPlaying} />
+            <div className="absolute -bottom-1 -right-1 p-0.5 rounded-full bg-breezy-blue text-navy-night shadow-sm">
               <Search className="w-2.5 h-2.5 stroke-[3]" />
             </div>
           </div>
@@ -101,9 +101,9 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={onToggleAudio}
-              className={`p-2 sm:px-3 sm:py-2 rounded-xl flex items-center gap-1.5 border transition-all duration-200 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-conan-gold ${
+              className={`p-2 sm:px-3 sm:py-2 rounded-xl flex items-center gap-1.5 border transition-all duration-200 text-xs font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-breezy-blue ${
                 isPlaying
-                  ? 'bg-conan-gold/15 text-conan-gold border-conan-gold/40 glow-gold shadow-sm'
+                  ? 'bg-breezy-blue/20 text-breezy-blue border-breezy-blue/50 glow-breezy shadow-sm'
                   : 'bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border-white/10'
               }`}
               title={isPlaying ? 'Tạm dừng nhạc nền BGM' : 'Bật nhạc nền Conan BGM'}
@@ -112,10 +112,10 @@ export const Header: React.FC<HeaderProps> = ({
               {isPlaying ? (
                 <>
                   <div className="flex items-end space-x-0.5 h-3.5 px-0.5" aria-hidden="true">
-                    <div className="w-0.5 bg-conan-gold rounded-full animate-equalizer-1" />
-                    <div className="w-0.5 bg-conan-red rounded-full animate-equalizer-2" />
-                    <div className="w-0.5 bg-conan-gold rounded-full animate-equalizer-3" />
-                    <div className="w-0.5 bg-conan-red rounded-full animate-equalizer-4" />
+                    <div className="w-0.5 bg-breezy-blue rounded-full animate-equalizer-1" />
+                    <div className="w-0.5 bg-cream-sun rounded-full animate-equalizer-2" />
+                    <div className="w-0.5 bg-breezy-blue rounded-full animate-equalizer-3" />
+                    <div className="w-0.5 bg-matcha-tea rounded-full animate-equalizer-4" />
                   </div>
                   <span className="hidden md:inline font-semibold">BGM</span>
                 </>
@@ -132,18 +132,18 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={onOpenCart}
-            className="relative p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900/70 hover:bg-conan-blue-light/30 text-slate-100 border border-white/10 hover:border-conan-gold/40 transition-all duration-200 flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-conan-gold active:scale-95"
+            className="relative p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900/70 hover:bg-navy-night text-slate-100 border border-white/10 hover:border-breezy-blue/40 transition-all duration-200 flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-breezy-blue active:scale-95"
             title={`Giỏ hàng (${cartCount} vật phẩm)`}
             aria-label={`Giỏ hàng, hiện có ${cartCount} sản phẩm`}
           >
-            <ShoppingBag className="w-4 h-4 text-conan-gold" />
+            <ShoppingBag className="w-4 h-4 text-cream-sun" />
             <span className="hidden md:inline text-xs font-semibold text-slate-200">
               Giỏ Hàng
             </span>
 
             {/* Cart Badge */}
             {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 min-w-[1.25rem] h-5 px-1 rounded-full bg-conan-red text-white text-[11px] font-extrabold flex items-center justify-center border-2 border-conan-navy shadow-md animate-pulse">
+              <span className="absolute -top-1.5 -right-1.5 min-w-[1.25rem] h-5 px-1 rounded-full bg-breezy-blue text-navy-night text-[11px] font-black flex items-center justify-center border-2 border-navy-night shadow-md animate-pulse">
                 {cartCount > 99 ? '99+' : cartCount}
               </span>
             )}
@@ -153,7 +153,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={onOpenAdmin}
-            className="p-2 sm:p-2.5 rounded-xl bg-slate-900/60 hover:bg-conan-gold/15 text-slate-400 hover:text-conan-gold border border-white/5 hover:border-conan-gold/40 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-conan-gold active:scale-95 group"
+            className="p-2 sm:p-2.5 rounded-xl bg-slate-900/60 hover:bg-breezy-blue/15 text-slate-400 hover:text-breezy-blue border border-white/5 hover:border-breezy-blue/40 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-breezy-blue active:scale-95 group"
             title="Khu vực mật vụ Mori (Admin PIN: 1412)"
             aria-label="Đăng nhập quản trị viên"
           >

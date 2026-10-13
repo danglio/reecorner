@@ -84,54 +84,54 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
   return (
     <div className="w-full space-y-8 animate-fadeIn">
       {/* 1. BreeCorner Shop Banner */}
-      <section className="relative overflow-hidden rounded-2xl border border-bree-baby/30 bg-gradient-to-r from-conan-navy-dark via-conan-navy to-conan-blue/40 p-6 sm:p-8 shadow-2xl">
+      <section className="relative overflow-hidden rounded-2xl border border-breezy-blue/40 bg-gradient-to-r from-[#03142E] via-[#051F45] to-[#0D2C5B] p-6 sm:p-8 shadow-2xl">
         {/* Glow Effects */}
-        <div className="absolute -top-16 -right-16 w-64 h-64 bg-bree-baby/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-conan-red/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -right-16 w-64 h-64 bg-breezy-blue/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-cream-sun/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-bree-baby/15 border border-bree-baby/30 text-bree-moon text-xs font-semibold tracking-wide">
-              <Sparkles className="w-3.5 h-3.5 text-bree-baby animate-spin-slow" />
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-breezy-blue/15 border border-breezy-blue/30 text-cream-sun text-xs font-semibold tracking-wide">
+              <Sparkles className="w-3.5 h-3.5 text-breezy-blue animate-spin-slow" />
               <span>✨ KHO BÁU BẢO BỐI & THẺ BÀI SƯU TẦM BREECORNER</span>
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white font-outfit tracking-tight leading-tight">
               Cửa Hàng Thẻ Bài Conan & Kho Báu{' '}
-              <span className="text-bree-moon">BreeCorner</span>
+              <span className="text-cream-sun font-black">BreeCorner</span>
             </h2>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
               Sở hữu các thẻ bài các fandom cùng những vật phẩm sưu tầm độc quyền tại BreeCorner. Giao hàng toàn quốc bảo mật, xác nhận nhanh qua Facebook!
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-slate-300">
-              <span className="flex items-center space-x-1.5 bg-slate-900/40 px-2.5 py-1 rounded-lg border border-white/5">
+              <span className="flex items-center space-x-1.5 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-breezy-blue/20">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span className="font-medium text-white">✅ 100% Chính hãng & Uy tín</span>
               </span>
-              <span className="flex items-center space-x-1.5 bg-slate-900/40 px-2.5 py-1 rounded-lg border border-white/5">
-                <Flame className="w-4 h-4 text-conan-red" />
+              <span className="flex items-center space-x-1.5 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-matcha-tea/30">
+                <Flame className="w-4 h-4 text-matcha-tea" />
                 <span className="font-medium text-white">🔥 Thẻ Bài & Bảo Bối Sưu Tầm</span>
               </span>
-              <span className="flex items-center space-x-1.5 bg-slate-900/40 px-2.5 py-1 rounded-lg border border-white/5">
-                <Zap className="w-4 h-4 text-bree-baby" />
+              <span className="flex items-center space-x-1.5 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-breezy-blue/20">
+                <Zap className="w-4 h-4 text-breezy-blue" />
                 <span className="font-medium text-white">⚡ Xác Nhận & Giao Hàng Siêu Tốc</span>
               </span>
             </div>
           </div>
 
           {/* Quick Counter Card */}
-          <div className="flex-shrink-0 grid grid-cols-2 gap-3 p-4 rounded-xl bg-slate-900/60 border border-white/10 backdrop-blur-md">
-            <div className="p-3 text-center rounded-lg bg-conan-navy-light/40 border border-white/5">
-              <span className="text-2xl font-black text-bree-moon font-outfit">
+          <div className="flex-shrink-0 grid grid-cols-2 gap-3 p-4 rounded-xl bg-slate-900/80 border border-breezy-blue/30 backdrop-blur-md">
+            <div className="p-3 text-center rounded-lg bg-navy-night/80 border border-white/5">
+              <span className="text-2xl font-black text-cream-sun font-outfit">
                 {products.length}
               </span>
-              <p className="text-[11px] text-slate-400 mt-0.5">Vật Phẩm Sẵn Có</p>
+              <p className="text-[11px] text-slate-300 mt-0.5">Vật Phẩm Sẵn Có</p>
             </div>
-            <div className="p-3 text-center rounded-lg bg-conan-navy-light/40 border border-white/5">
-              <span className="text-2xl font-black text-bree-baby font-outfit">
+            <div className="p-3 text-center rounded-lg bg-navy-night/80 border border-white/5">
+              <span className="text-2xl font-black text-breezy-blue font-outfit">
                 100%
               </span>
-              <p className="text-[11px] text-slate-400 mt-0.5">Kho BreeCorner</p>
+              <p className="text-[11px] text-slate-300 mt-0.5">Kho BreeCorner</p>
             </div>
           </div>
         </div>
@@ -252,20 +252,10 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
             return (
               <div
                 key={product.id}
-                className="group relative flex flex-col rounded-2xl border border-white/10 bg-conan-navy/80 hover:border-conan-gold/50 transition-all duration-300 hover:shadow-xl hover:shadow-conan-gold/10 hover:-translate-y-1 overflow-hidden"
+                className="group relative flex flex-col rounded-2xl border border-breezy-blue/30 bg-gradient-to-b from-[#051F45] via-[#082755] to-[#0E356A] hover:border-breezy-blue transition-all duration-300 hover:shadow-2xl hover:shadow-breezy-blue/20 hover:-translate-y-1 overflow-hidden"
               >
-                {/* Rarity Glow Border Top Accent */}
-                <div
-                  className={`h-1 w-full ${
-                    product.rarity === 'SSR'
-                      ? 'bg-gradient-to-r from-red-500 via-amber-400 to-red-500'
-                      : product.rarity === 'UR'
-                      ? 'bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500'
-                      : product.rarity === 'DETECTIVE'
-                      ? 'bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-400'
-                      : 'bg-gradient-to-r from-purple-500 to-indigo-500'
-                  }`}
-                />
+                {/* Breezy Blue & Cream Sun Accent Border */}
+                <div className="h-1 w-full bg-gradient-to-r from-breezy-blue via-cream-sun to-breezy-blue" />
 
                 {/* Card Image Wrapper */}
                 <div className="relative w-full aspect-[4/3] bg-slate-950 overflow-hidden">
@@ -283,7 +273,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                   />
 
                   {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-conan-navy via-transparent to-transparent opacity-60" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#051F45] via-transparent to-transparent opacity-70" />
 
                   {/* Top Badges */}
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
@@ -303,8 +293,8 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
 
                   {/* Rating Badge */}
                   {product.rating && (
-                    <div className="absolute bottom-2.5 left-3 flex items-center space-x-1 px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm border border-white/10 text-conan-gold text-[11px] font-semibold">
-                      <Star className="w-3 h-3 fill-conan-gold text-conan-gold" />
+                    <div className="absolute bottom-2.5 left-3 flex items-center space-x-1 px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm border border-white/10 text-cream-sun text-[11px] font-semibold">
+                      <Star className="w-3 h-3 fill-cream-sun text-cream-sun" />
                       <span>{product.rating.toFixed(1)}</span>
                     </div>
                   )}
@@ -326,28 +316,38 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                 {/* Card Content */}
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-2">
-                    <h3 className="font-outfit font-bold text-white text-base group-hover:text-breezy-blue transition-colors line-clamp-2">
+                    <h3 className="font-outfit font-bold text-white text-base group-hover:text-breezy-blue transition-colors line-clamp-1">
                       {product.name}
                     </h3>
-                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                    <p className="text-[11px] font-semibold text-breezy-blue/90 flex items-center gap-1">
+                      <span className="text-cream-sun">Vàng Cream Nắng</span>
+                      <span className="text-white/30">•</span>
+                      <span>Breezy Blue</span>
+                    </p>
+                    <p className="text-xs text-slate-300/80 line-clamp-2 leading-relaxed">
                       {product.description}
                     </p>
                   </div>
 
-                  <div className="space-y-3 pt-2 border-t border-white/5">
+                  <div className="space-y-3 pt-2 border-t border-white/10">
                     {/* Price Block */}
-                    <div className="flex items-baseline space-x-2">
-                      <span className="text-lg sm:text-xl font-black text-conan-gold font-outfit tracking-tight">
-                        {formatVND(product.price)}
-                      </span>
-                      {product.originalPrice && product.originalPrice > product.price && (
-                        <span className="text-xs text-slate-500 line-through">
-                          {formatVND(product.originalPrice)}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-lg sm:text-xl font-black text-cream-sun font-outfit tracking-tight">
+                          {formatVND(product.price)}
                         </span>
-                      )}
+                        {product.originalPrice && product.originalPrice > product.price && (
+                          <span className="text-xs text-slate-400 line-through">
+                            {formatVND(product.originalPrice)}
+                          </span>
+                        )}
+                      </div>
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-matcha-tea text-white shadow-sm border border-matcha-tea/60">
+                        Bảo Bối Agasa
+                      </span>
                     </div>
 
-                    {/* Action Buttons */}
+                    {/* Action Buttons: Đặt Đơn chuẩn Breezy Blue */}
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => handleAddToCart(product)}
@@ -355,7 +355,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                         className={`flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-semibold transition-all border ${
                           isAdded
                             ? 'bg-emerald-600 text-white border-emerald-500'
-                            : 'bg-conan-navy-light text-slate-200 border-white/10 hover:border-conan-gold hover:text-white hover:bg-conan-navy-light/80'
+                            : 'bg-navy-night/80 text-breezy-blue border-breezy-blue/40 hover:bg-breezy-blue/15 hover:border-breezy-blue'
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                         title="Thêm vào giỏ hàng"
                       >
@@ -366,7 +366,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                           </>
                         ) : (
                           <>
-                            <ShoppingCart className="w-3.5 h-3.5 text-conan-gold" />
+                            <ShoppingCart className="w-3.5 h-3.5 text-cream-sun" />
                             <span>Thêm giỏ</span>
                           </>
                         )}
@@ -375,10 +375,10 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                       <button
                         onClick={() => handleBuyNow(product)}
                         disabled={!product.inStock}
-                        className="flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-bold bg-gradient-to-r from-conan-red to-conan-red-hover hover:from-conan-red-hover hover:to-conan-red text-white shadow-md shadow-conan-red/20 transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-extrabold bg-gradient-to-r from-breezy-blue to-[#DCEBFA] hover:from-[#DCEBFA] hover:to-breezy-blue text-navy-night shadow-md shadow-breezy-blue/25 border border-breezy-blue transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                       >
-                        <Zap className="w-3.5 h-3.5 fill-white" />
-                        <span>Mua ngay</span>
+                        <Zap className="w-3.5 h-3.5 fill-navy-night text-navy-night" />
+                        <span>Đặt Đơn</span>
                       </button>
                     </div>
                   </div>

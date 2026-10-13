@@ -124,11 +124,11 @@ export const App: React.FC = () => {
   const settings = getSettings();
 
   return (
-    <div className="min-h-screen bg-conan-navy text-slate-100 flex flex-col relative selection:bg-conan-red selection:text-white">
-      {/* Background ambient lighting effects */}
-      <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-breezy-blue/15 rounded-full blur-[120px] pointer-events-none -z-10" />
-      <div className="fixed bottom-1/4 right-1/4 w-[400px] h-[400px] bg-conan-red/10 rounded-full blur-[100px] pointer-events-none -z-10" />
-      <div className="fixed top-1/2 right-10 w-[300px] h-[300px] bg-cream-sun/10 rounded-full blur-[90px] pointer-events-none -z-10" />
+    <div className="min-h-screen bg-navy-night text-slate-100 flex flex-col relative selection:bg-breezy-blue selection:text-navy-night">
+      {/* Background ambient lighting effects BreeCorner */}
+      <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-breezy-blue/20 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="fixed bottom-1/4 right-1/4 w-[400px] h-[400px] bg-matcha-tea/15 rounded-full blur-[100px] pointer-events-none -z-10" />
+      <div className="fixed top-1/2 right-10 w-[350px] h-[350px] bg-cream-sun/15 rounded-full blur-[90px] pointer-events-none -z-10" />
 
       {/* Main Header */}
       <Header

@@ -605,9 +605,9 @@ ${itemsListText}
               <button
                 onClick={handleCheckoutFacebook}
                 disabled={isSubmitting}
-                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-conan-red to-conan-red-hover hover:from-conan-red-hover hover:to-conan-red text-white font-extrabold text-sm shadow-xl shadow-conan-red/25 flex items-center justify-center space-x-2 transition-all transform active:scale-98 disabled:opacity-60 cursor-pointer"
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-breezy-blue to-[#DCEBFA] hover:from-[#DCEBFA] hover:to-breezy-blue text-navy-night font-black text-sm shadow-xl shadow-breezy-blue/25 border border-breezy-blue glow-breezy flex items-center justify-center space-x-2 transition-all transform active:scale-98 disabled:opacity-60 cursor-pointer"
               >
-                <Send className="w-4 h-4 fill-white" />
+                <Send className="w-4 h-4 fill-navy-night text-navy-night" />
                 <span>XÁC NHẬN ĐẶT HÀNG QUA FACEBOOK</span>
               </button>
 

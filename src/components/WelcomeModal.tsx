@@ -211,10 +211,10 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
       {/* Modal Container */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`glass-modal w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl sm:rounded-3xl border border-conan-gold/40 glow-gold shadow-2xl relative flex flex-col text-slate-100 ${className}`}
+        className={`glass-modal w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl sm:rounded-3xl border border-breezy-blue/40 shadow-2xl glow-breezy relative flex flex-col text-slate-100 ${className}`}
       >
         {/* Decorative Top Accent Light Bars */}
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-conan-red via-conan-gold to-conan-red rounded-t-2xl sm:rounded-t-3xl" />
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-breezy-blue via-cream-sun to-matcha-tea rounded-t-2xl sm:rounded-t-3xl" />
 
         {/* Close Button (X) with Skip Behavior */}
         <button
@@ -222,7 +222,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
           onClick={handleSkipToBrowse}
           aria-label="Đóng popup chào mừng và xem shop"
           title="Bỏ qua & Xem shop (Phát nhạc Conan)"
-          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-800/80 hover:bg-conan-red text-slate-300 hover:text-white flex items-center justify-center border border-white/10 hover:border-conan-red transition-all duration-200 active:scale-95 group"
+          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-800/80 hover:bg-breezy-blue text-slate-300 hover:text-navy-night flex items-center justify-center border border-white/10 hover:border-breezy-blue transition-all duration-200 active:scale-95 group"
         >
           <X className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:rotate-90 duration-200" />
         </button>
@@ -230,12 +230,12 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
         {/* Modal Header */}
         <div className="p-5 sm:p-7 pb-4 sm:pb-5 text-center relative border-b border-white/10">
           {/* Ambient Glow behind badge */}
-          <div className="absolute top-6 left-1/2 -translate-x-1/2 w-32 h-16 bg-conan-gold/20 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute top-6 left-1/2 -translate-x-1/2 w-32 h-16 bg-breezy-blue/20 rounded-full blur-2xl pointer-events-none" />
 
           {/* Detective Agency Badge & Red Bow Tie */}
           <div className="flex items-center justify-center space-x-3 mb-3">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-conan-red/25 border border-conan-red/50 flex items-center justify-center glow-red flex-shrink-0 shadow-lg">
-              <ConanBowtieIcon className="w-7 h-7 sm:w-8 sm:h-8 text-conan-red" isAnimated={true} />
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-breezy-blue/20 border border-breezy-blue/50 flex items-center justify-center glow-breezy flex-shrink-0 shadow-lg text-breezy-blue">
+              <ConanBowtieIcon className="w-7 h-7 sm:w-8 sm:h-8" isAnimated={true} />
             </div>
             <div className="text-left">
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-navy-night/80 text-cream-sun border border-breezy-blue/40 shadow-sm">
@@ -447,9 +447,9 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             {/* Primary Action Button: Liên Hệ Đặt Hàng Qua Facebook */}
             <button
               type="submit"
-              className="w-full py-3 px-4 rounded-xl font-bold text-white bg-conan-red hover:bg-conan-red-hover active:scale-[0.99] transition-all duration-200 shadow-lg shadow-conan-red/30 glow-red flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
+              className="w-full py-3 px-4 rounded-xl font-extrabold text-navy-night bg-gradient-to-r from-breezy-blue to-[#DCEBFA] hover:from-[#DCEBFA] hover:to-breezy-blue active:scale-[0.99] transition-all duration-200 shadow-lg shadow-breezy-blue/25 border border-breezy-blue glow-breezy flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
             >
-              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Send className="w-4 h-4 sm:w-5 sm:h-5 text-navy-night fill-navy-night" />
               <span>LIÊN HỆ ĐẶT HÀNG QUA FACEBOOK NGƯỜI BÁN</span>
             </button>
 
@@ -457,7 +457,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             <button
               type="button"
               onClick={handleSkipToBrowse}
-              className="w-full py-2.5 px-4 rounded-xl font-semibold text-slate-200 hover:text-white bg-conan-blue/50 hover:bg-conan-blue/80 border border-breezy-blue/40 hover:border-breezy-blue/80 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm group cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl font-bold text-slate-200 hover:text-white bg-navy-night/80 hover:bg-navy-night border border-breezy-blue/40 hover:border-breezy-blue active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm group cursor-pointer"
             >
               <span>BỎ QUA ĐỂ XEM SHOP</span>
               <ArrowRight className="w-4 h-4 text-cream-sun group-hover:translate-x-1 transition-transform" />
