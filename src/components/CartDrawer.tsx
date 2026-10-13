@@ -261,20 +261,20 @@ ${itemsListText}
           {/* Header */}
           <div className="p-5 border-b border-white/10 flex items-center justify-between bg-conan-navy/50">
             <div className="flex items-center space-x-2.5">
-              <div className="w-9 h-9 rounded-xl bg-conan-gold/15 text-conan-gold flex items-center justify-center border border-conan-gold/30">
+              <div className="w-9 h-9 rounded-xl bg-breezy-blue/15 text-breezy-blue flex items-center justify-center border border-breezy-blue/30">
                 <ShoppingBag className="w-5 h-5" />
               </div>
               <div>
                 <h2 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
-                  <span>Giỏ Hàng Thám Tử</span>
+                  <span>Giỏ Hàng BreeCorner</span>
                   {totalQuantity > 0 && (
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-conan-gold text-slate-950 font-extrabold">
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-breezy-blue text-navy-night font-extrabold">
                       {totalQuantity}
                     </span>
                   )}
                 </h2>
                 <p className="text-[11px] text-slate-400">
-                  Vật phẩm sẵn sàng đóng gói & xuất đơn
+                  Vật phẩm sẵn sàng đóng gói & chốt đơn Facebook
                 </p>
               </div>
             </div>
@@ -310,18 +310,18 @@ ${itemsListText}
                 </div>
 
                 {/* Order Code Box */}
-                <div className="p-4 rounded-xl bg-conan-navy border border-conan-gold/30 space-y-2 text-left">
+                <div className="p-4 rounded-xl bg-conan-navy border border-breezy-blue/40 space-y-2 text-left">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-slate-400">Mã tra cứu đơn hàng:</span>
                     <button
                       onClick={() => handleCopyCode(createdOrder.id)}
-                      className="inline-flex items-center space-x-1 text-xs text-conan-gold hover:text-conan-gold-light"
+                      className="inline-flex items-center space-x-1 text-xs text-breezy-blue hover:text-white"
                     >
                       <Copy className="w-3.5 h-3.5" />
                       <span>{copiedCode ? 'Đã sao chép!' : 'Sao chép mã'}</span>
                     </button>
                   </div>
-                  <div className="text-xl font-mono font-black text-conan-gold tracking-wider">
+                  <div className="text-xl font-mono font-black text-cream-sun tracking-wider">
                     {createdOrder.id}
                   </div>
                   <p className="text-[11px] text-slate-400">
@@ -341,14 +341,14 @@ ${itemsListText}
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Tổng thanh toán:</span>
-                    <span className="font-bold text-conan-gold">{formatVND(createdOrder.total)}</span>
+                    <span className="font-bold text-cream-sun">{formatVND(createdOrder.total)}</span>
                   </div>
                 </div>
 
                 <div className="pt-2 flex flex-col gap-2">
                   <button
                     onClick={handleClose}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-conan-gold to-conan-gold-dark text-slate-950 font-bold text-sm shadow-lg shadow-conan-gold/20 hover:brightness-110 transition-all"
+                    className="w-full py-3 rounded-xl bg-breezy-blue text-navy-night font-extrabold text-sm shadow-lg shadow-breezy-blue/20 hover:brightness-110 transition-all"
                   >
                     Hoàn tất & Tiếp tục khám phá
                   </button>
@@ -363,12 +363,12 @@ ${itemsListText}
                 <div className="space-y-1">
                   <h3 className="text-base font-bold text-white">Giỏ hàng của bạn đang trống</h3>
                   <p className="text-xs text-slate-400 max-w-xs mx-auto">
-                    Chưa có thẻ bài hoặc bảo bối nào trong giỏ. Hãy chọn những món đồ bạn yêu thích nhé!
+                    Chưa có thẻ bài hoặc báu vật nào trong giỏ. Hãy chọn những món đồ bạn yêu thích nhé!
                   </p>
                 </div>
                 <button
                   onClick={handleClose}
-                  className="px-5 py-2.5 rounded-xl bg-conan-gold text-slate-950 font-bold text-xs hover:brightness-110 transition-all"
+                  className="px-5 py-2.5 rounded-xl bg-breezy-blue text-navy-night font-bold text-xs hover:brightness-110 transition-all"
                 >
                   Khám phá cửa hàng ngay
                 </button>

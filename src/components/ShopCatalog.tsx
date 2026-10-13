@@ -140,7 +140,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
       {/* 2. Controls: Filter Tabs & Search Bar */}
       <section className="space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          {/* Rarity Tabs */}
+          {/* Rarity Tabs - Bảng màu dịu mắt */}
           <div className="flex items-center overflow-x-auto pb-2 lg:pb-0 gap-2 scrollbar-none">
             {RARITY_TABS.map((tab) => {
               const active = selectedRarity === tab.id;
@@ -148,19 +148,19 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                 <button
                   key={tab.id}
                   onClick={() => setSelectedRarity(tab.id)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer border ${
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer border ${
                     active
-                      ? 'bg-conan-gold text-slate-950 border-conan-gold shadow-lg shadow-conan-gold/20 font-bold'
-                      : 'bg-conan-navy-light/50 text-slate-300 border-white/10 hover:border-conan-gold/40 hover:text-white hover:bg-conan-navy-light/80'
+                      ? 'bg-breezy-blue text-navy-night border-breezy-blue shadow-lg shadow-breezy-blue/20 font-bold glow-breezy'
+                      : 'bg-conan-navy-light/40 text-slate-300 border-white/10 hover:border-breezy-blue/40 hover:text-white hover:bg-conan-navy-light/70'
                   }`}
                 >
-                  <Layers className={`w-3.5 h-3.5 ${active ? 'text-slate-950' : 'text-slate-400'}`} />
+                  <Layers className={`w-3.5 h-3.5 ${active ? 'text-navy-night' : 'text-breezy-blue/70'}`} />
                   <span>{tab.label}</span>
                   {tab.id !== 'ALL' && (
                     <span
                       className={`text-[10px] px-1.5 py-0.2 rounded-full ${
                         active
-                          ? 'bg-slate-950 text-conan-gold font-bold'
+                          ? 'bg-navy-night text-cream-sun font-bold'
                           : 'bg-white/10 text-slate-300'
                       }`}
                     >
@@ -174,13 +174,13 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
 
           {/* Search Bar */}
           <div className="relative min-w-[260px] sm:min-w-[320px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-breezy-blue/70" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm kiếm thẻ bài, bảo bối Agasa..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-conan-navy-light/60 border border-white/10 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-conan-gold focus:ring-1 focus:ring-conan-gold transition-all"
+              placeholder="Tìm kiếm thẻ bài, báu vật sưu tầm BreeCorner..."
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-conan-navy-light/50 border border-white/10 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-breezy-blue focus:ring-1 focus:ring-breezy-blue transition-all"
             />
             {searchQuery && (
               <button
@@ -326,7 +326,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                 {/* Card Content */}
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-2">
-                    <h3 className="font-outfit font-bold text-white text-base group-hover:text-conan-gold transition-colors line-clamp-2">
+                    <h3 className="font-outfit font-bold text-white text-base group-hover:text-breezy-blue transition-colors line-clamp-2">
                       {product.name}
                     </h3>
                     <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">

@@ -8,38 +8,60 @@ export default {
     extend: {
       colors: {
         'conan-navy': {
-          DEFAULT: '#0B192C',
-          light: '#1E3E62',
-          dark: '#060E18',
-          deep: '#050B14',
+          DEFAULT: '#051F45', // Navy Đêm #051F45 (Giảm độ chói mắt)
+          light: '#0D2C5B',
+          dark: '#03142E',
+          deep: '#020C1C',
+        },
+        'navy-night': {
+          DEFAULT: '#051F45', // Navy Đêm
+          light: '#0D2C5B',
+          dark: '#03142E',
+          deep: '#020C1C',
         },
         'conan-blue': {
-          DEFAULT: '#1E3E62',
-          light: '#2C5A88',
-          dark: '#0B192C',
+          DEFAULT: '#0D2C5B',
+          light: '#1B4785',
+          dark: '#051F45',
         },
         'conan-red': {
-          DEFAULT: '#E63946',
+          DEFAULT: '#E63946', // Chữ X nổi bật màu đỏ
           hover: '#D90429',
           dark: '#9B111E',
           light: '#FF6B6B',
         },
         'conan-gold': {
-          DEFAULT: '#FEFDD0', // Vàng Ánh Trăng dịu mắt
-          light: '#FFFEE6',
-          dark: '#E2E1B0',
+          DEFAULT: '#FFF4C8', // Vàng Cream Nắng (Vàng Nhạt Bơ) #FFF4C8
+          light: '#FFFBEB',
+          dark: '#FBECA8',
           accent: '#F59E0B',
         },
+        'breezy-blue': {
+          DEFAULT: '#BED9F4', // Breezy Blue (Xanh Nhạt Dịu) #BED9F4
+          light: '#DCEBFA',
+          dark: '#97C1ED',
+          soft: '#F0F6FD',
+        },
         'bree-baby': {
-          DEFAULT: '#7DD3FC', // Xanh Baby
-          light: '#BAE6FD',
-          dark: '#38BDF8',
-          soft: '#E0F2FE',
+          DEFAULT: '#BED9F4', // Breezy Blue #BED9F4
+          light: '#DCEBFA',
+          dark: '#97C1ED',
+          soft: '#F0F6FD',
+        },
+        'cream-sun': {
+          DEFAULT: '#FFF4C8', // Vàng Cream Nắng #FFF4C8
+          light: '#FFFBEB',
+          dark: '#FBECA8',
         },
         'bree-moon': {
-          DEFAULT: '#FEFDD0', // Vàng Ánh Trăng #FEFDD0
-          soft: '#FFFEE6',
-          dark: '#E2E1B0',
+          DEFAULT: '#FFF4C8', // Vàng Cream Nắng #FFF4C8
+          soft: '#FFFBEB',
+          dark: '#FBECA8',
+        },
+        'matcha-tea': {
+          DEFAULT: '#838F58', // Matcha Tea #838F58
+          light: '#9BA96E',
+          dark: '#6B7645',
         },
       },
       fontFamily: {

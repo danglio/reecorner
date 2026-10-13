@@ -562,17 +562,25 @@ export const OrderStatusView: React.FC<OrderStatusViewProps> = ({
                   </div>
                 </div>
 
-                {/* Zalo Support Contact Button */}
-                <div className="pt-3">
+                {/* Support Contact Buttons */}
+                <div className="pt-3 space-y-2">
+                  <a
+                    href={settings.facebookUrl || 'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3 px-4 rounded-xl bg-breezy-blue/20 hover:bg-breezy-blue/30 text-breezy-blue hover:text-white border border-breezy-blue/40 flex items-center justify-center space-x-2 font-bold text-sm transition-all shadow-sm"
+                  >
+                    <ExternalLink className="w-4 h-4 text-breezy-blue" />
+                    <span>Hỗ trợ đơn qua Facebook Người Bán</span>
+                  </a>
                   <a
                     href={zaloUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-3 px-4 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-white border border-blue-500/40 flex items-center justify-center space-x-2 font-semibold text-sm transition-all"
+                    className="w-full py-2 px-4 rounded-xl bg-slate-900/40 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-white/5 flex items-center justify-center space-x-2 text-xs transition-all"
                   >
-                    <MessageCircle className="w-4 h-4 text-blue-400" />
-                    <span>Liên hệ hỗ trợ đơn qua Zalo ({settings.zaloPhone})</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-blue-400 ml-1" />
+                    <MessageCircle className="w-3.5 h-3.5 text-cream-sun" />
+                    <span>Kênh Zalo phụ ({settings.zaloPhone})</span>
                   </a>
                 </div>
               </div>

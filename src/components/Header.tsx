@@ -47,15 +47,15 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Logo Typography */}
           <div className="flex flex-col">
-            <div className="flex items-center gap-1 sm:gap-1.5 font-outfit text-sm sm:text-base font-extrabold tracking-wide text-white group-hover:text-bree-moon transition-colors">
+            <div className="flex items-center gap-1 sm:gap-1.5 font-outfit text-sm sm:text-base font-extrabold tracking-wide text-white group-hover:text-cream-sun transition-colors">
               <span>BREECORNER</span>
               <span className="text-conan-red font-black text-base sm:text-lg">X</span>
-              <span className="text-bree-moon">CONAN SHOP</span>
+              <span className="text-cream-sun">CONAN SHOP</span>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-slate-300 font-medium">
-              <span className="text-bree-baby font-semibold">Tiệm Thẻ Bài</span>
+              <span className="text-breezy-blue font-semibold">Góc Thẻ Bài</span>
               <span className="text-white/40">•</span>
-              <span>Vật Phẩm Sưu Tầm</span>
+              <span className="text-cream-sun/90">Báu Vật</span>
             </div>
           </div>
         </button>
@@ -71,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => setActiveTab('shop')}
             className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 select-none ${
               activeTab === 'shop'
-                ? 'bg-bree-baby text-slate-950 font-bold shadow-md glow-baby'
+                ? 'bg-breezy-blue text-navy-night font-extrabold shadow-md glow-breezy'
                 : 'text-slate-300 hover:text-white hover:bg-white/5'
             }`}
           >
@@ -85,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => setActiveTab('tracking')}
             className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 select-none ${
               activeTab === 'tracking'
-                ? 'bg-bree-moon text-slate-950 shadow-md glow-gold font-bold'
+                ? 'bg-cream-sun text-navy-night shadow-md glow-cream font-extrabold'
                 : 'text-slate-300 hover:text-white hover:bg-white/5'
             }`}
           >

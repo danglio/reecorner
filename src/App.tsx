@@ -126,9 +126,9 @@ export const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-conan-navy text-slate-100 flex flex-col relative selection:bg-conan-red selection:text-white">
       {/* Background ambient lighting effects */}
-      <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-conan-blue/15 rounded-full blur-[120px] pointer-events-none -z-10" />
+      <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-breezy-blue/15 rounded-full blur-[120px] pointer-events-none -z-10" />
       <div className="fixed bottom-1/4 right-1/4 w-[400px] h-[400px] bg-conan-red/10 rounded-full blur-[100px] pointer-events-none -z-10" />
-      <div className="fixed top-1/2 right-10 w-[300px] h-[300px] bg-conan-gold/10 rounded-full blur-[90px] pointer-events-none -z-10" />
+      <div className="fixed top-1/2 right-10 w-[300px] h-[300px] bg-cream-sun/10 rounded-full blur-[90px] pointer-events-none -z-10" />
 
       {/* Main Header */}
       <Header
@@ -175,10 +175,10 @@ export const App: React.FC = () => {
               <span>BREECORNER X CONAN SHOP</span>
             </div>
             <p className="text-slate-400 leading-relaxed text-xs">
-              Tiệm thẻ bài & vật phẩm sưu tầm các fandom độc quyền tại BreeCorner kết hợp Detective Conan Shop.
+              Tiệm thẻ bài & vật phẩm sưu tầm độc quyền tại BreeCorner kết hợp Detective Conan Shop.
             </p>
-            <p className="text-[11px] text-bree-moon font-mono italic">
-              "Bảo vật trong tầm tay • Trải nghiệm sưu tầm trọn vẹn"
+            <p className="text-[11px] text-cream-sun font-mono italic">
+              "Góc thẻ bài & báu vật • Trải nghiệm sưu tầm trọn vẹn"
             </p>
           </div>
 
@@ -188,26 +188,26 @@ export const App: React.FC = () => {
               Liên Hệ & Đặt Hàng
             </h4>
             <p className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-bree-baby" />
+              <Sparkles className="w-3.5 h-3.5 text-breezy-blue" />
               <span>Facebook Người Bán: </span>
               <a
                 href={settings.facebookUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-bree-baby hover:underline truncate max-w-[200px]"
+                className="font-medium text-breezy-blue hover:underline truncate max-w-[200px]"
                 title="Mở Facebook người bán"
               >
                 BreeCorner (Nhắn tin ngay)
               </a>
             </p>
             <p className="flex items-center gap-2">
-              <Phone className="w-3.5 h-3.5 text-bree-moon" />
+              <Phone className="w-3.5 h-3.5 text-cream-sun" />
               <span>Zalo hỗ trợ: </span>
               <a
                 href={`https://zalo.me/${settings.zaloPhone}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-bree-moon hover:underline"
+                className="font-mono text-cream-sun hover:underline"
               >
                 {settings.zaloPhone}
               </a>
@@ -229,9 +229,9 @@ export const App: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsAdminOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-conan-navy hover:bg-slate-800 text-bree-moon border border-bree-baby/30 text-xs font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-conan-navy hover:bg-slate-800 text-cream-sun border border-breezy-blue/30 text-xs font-medium transition-colors"
             >
-              <Shield className="w-3.5 h-3.5 text-bree-baby" />
+              <Shield className="w-3.5 h-3.5 text-breezy-blue" />
               Đăng nhập Quản trị viên (#1412)
             </button>
           </div>
@@ -240,7 +240,7 @@ export const App: React.FC = () => {
         <div className="max-w-6xl mx-auto pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-center text-slate-500 text-[11px]">
           <p>© 2026 BREECORNER X CONAN SHOP. All rights reserved.</p>
           <p className="flex items-center justify-center gap-1">
-            Giao diện dịu mắt Xanh Baby × Vàng Ánh Trăng • Hệ thống theo dõi đơn hàng
+            Bảng màu chuẩn Breezy Blue × Vàng Cream Nắng trên nền Navy Đêm dịu mắt
             <Heart className="w-3 h-3 text-conan-red inline" />
           </p>
         </div>

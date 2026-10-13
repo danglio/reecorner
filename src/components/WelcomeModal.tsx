@@ -238,11 +238,11 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
               <ConanBowtieIcon className="w-7 h-7 sm:w-8 sm:h-8 text-conan-red" isAnimated={true} />
             </div>
             <div className="text-left">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-conan-gold/15 text-bree-moon border border-conan-gold/40">
-                <Sparkles className="w-3 h-3 text-conan-gold animate-spin" style={{ animationDuration: '4s' }} />
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-navy-night/80 text-cream-sun border border-breezy-blue/40 shadow-sm">
+                <Sparkles className="w-3 h-3 text-breezy-blue animate-spin" style={{ animationDuration: '4s' }} />
                 ✨ HỒ SƠ BẢO MẬT #1412 x BREECORNER
               </span>
-              <p className="text-[11px] sm:text-xs font-semibold text-bree-baby tracking-wide uppercase mt-0.5">
+              <p className="text-[11px] sm:text-xs font-semibold text-breezy-blue tracking-wide uppercase mt-0.5">
                 BreeCorner
               </p>
             </div>
@@ -252,12 +252,12 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             id="welcome-modal-title"
             className="text-xl sm:text-2xl md:text-[26px] font-outfit font-extrabold tracking-tight text-white leading-snug"
           >
-            BREECORNER <span className="text-conan-red font-black">X</span> <span className="text-bree-moon">CONAN SHOP</span>
+            BREECORNER <span className="text-conan-red font-black">X</span> <span className="text-cream-sun">CONAN SHOP</span>
           </h1>
 
           <p className="mt-1.5 text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
             Chào mừng bạn đến với tiệm thẻ bài & vật phẩm sưu tầm BreeCorner! Đặt hàng nhanh nhận tư vấn tức thì qua{' '}
-            <span className="text-bree-baby font-semibold underline decoration-bree-baby/50">Facebook Người Bán</span> hoặc bỏ qua để dạo quanh shop.
+            <span className="text-breezy-blue font-semibold underline decoration-breezy-blue/50">Facebook Người Bán</span> hoặc bỏ qua để dạo quanh shop.
           </p>
 
           {/* Feature Micro-Badges */}
@@ -267,7 +267,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
               Thẻ Bài Chính Hãng
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-conan-blue/40 border border-conan-blue/60 text-slate-200">
-              <Clock className="w-3.5 h-3.5 text-bree-moon" />
+              <Clock className="w-3.5 h-3.5 text-cream-sun" />
               Phản Hồi Facebook Nhanh
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-conan-blue/40 border border-conan-blue/60 text-slate-200">
@@ -280,8 +280,8 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
         {/* Modal Body & Quick Order Form */}
         <form onSubmit={handleSendFacebookOrder} className="p-5 sm:p-7 pt-4 sm:pt-5 space-y-4">
           <div className="text-left">
-            <h2 className="text-xs font-bold text-bree-moon uppercase tracking-wider flex items-center gap-1.5 mb-3">
-              <Package className="w-4 h-4 text-bree-baby" />
+            <h2 className="text-xs font-bold text-cream-sun uppercase tracking-wider flex items-center gap-1.5 mb-3">
+              <Package className="w-4 h-4 text-breezy-blue" />
               Đặt Hàng / Đăng Ký Tư Vấn Nhanh Qua Facebook
             </h2>
 
@@ -457,10 +457,10 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             <button
               type="button"
               onClick={handleSkipToBrowse}
-              className="w-full py-2.5 px-4 rounded-xl font-semibold text-slate-200 hover:text-white bg-conan-blue/50 hover:bg-conan-blue/80 border border-bree-baby/40 hover:border-bree-baby/80 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm group cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl font-semibold text-slate-200 hover:text-white bg-conan-blue/50 hover:bg-conan-blue/80 border border-breezy-blue/40 hover:border-breezy-blue/80 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm group cursor-pointer"
             >
               <span>BỎ QUA ĐỂ XEM SHOP</span>
-              <ArrowRight className="w-4 h-4 text-bree-moon group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 text-cream-sun group-hover:translate-x-1 transition-transform" />
             </button>
 
             {/* Micro Audio Hint */}

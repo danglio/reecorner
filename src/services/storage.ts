@@ -227,27 +227,27 @@ export function getRarityBadgeInfo(rarity: ProductRarity): {
     case 'SSR':
       return {
         label: 'SSR Cực Hiếm',
-        badgeClass: 'bg-red-500/20 text-red-400 border border-red-500/30',
+        badgeClass: 'bg-conan-red/20 text-[#FFF4C8] border border-conan-red/40',
       };
     case 'UR':
       return {
         label: 'UR Huyền Thoại',
-        badgeClass: 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
+        badgeClass: 'bg-breezy-blue/20 text-breezy-blue border border-breezy-blue/40',
       };
     case 'SR':
       return {
         label: 'SR Hiếm',
-        badgeClass: 'bg-purple-500/20 text-purple-300 border border-purple-500/30',
+        badgeClass: 'bg-matcha-tea/25 text-[#FFF4C8] border border-matcha-tea/40',
       };
     case 'R':
       return {
         label: 'R Thường',
-        badgeClass: 'bg-blue-500/20 text-blue-300 border border-blue-500/30',
+        badgeClass: 'bg-blue-500/20 text-breezy-blue border border-blue-500/30',
       };
     case 'DETECTIVE':
       return {
         label: 'BẢO BỐI AGASA',
-        badgeClass: 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 font-semibold',
+        badgeClass: 'bg-matcha-tea/30 text-cream-sun border border-matcha-tea/50 font-semibold',
       };
     default:
       return {
