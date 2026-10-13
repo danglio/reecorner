@@ -354,15 +354,18 @@ export function getOrderById(codeOrId: string): Order | undefined {
   if (!codeOrId) return undefined;
   const clean = codeOrId.trim().toLowerCase();
   const normalized = clean.replace(/[^a-z0-9]/g, '');
+  const cleanDigits = clean.replace(/[^0-9]/g, '');
   const orders = getOrders();
 
   return orders.find((order) => {
     const orderIdLower = order.id.toLowerCase();
     const orderPhone = order.phone.trim();
+    const orderPhoneDigits = orderPhone.replace(/[^0-9]/g, '');
     return (
       orderIdLower === clean ||
       orderIdLower.replace(/[^a-z0-9]/g, '') === normalized ||
-      orderPhone === clean
+      orderPhone === clean ||
+      (cleanDigits.length >= 9 && orderPhoneDigits === cleanDigits)
     );
   });
 }

@@ -44,10 +44,31 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
   onSkip,
   className = '',
 }) => {
-  // Form fields state
-  const [customerName, setCustomerName] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
+  // Form fields state with persistence
+  const [customerName, setCustomerName] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('conan_customer_info');
+      return saved ? JSON.parse(saved).name || '' : '';
+    } catch {
+      return '';
+    }
+  });
+  const [phone, setPhone] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('conan_customer_info');
+      return saved ? JSON.parse(saved).phone || '' : '';
+    } catch {
+      return '';
+    }
+  });
+  const [address, setAddress] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('conan_customer_info');
+      return saved ? JSON.parse(saved).address || '' : '';
+    } catch {
+      return '';
+    }
+  });
   const [note, setNote] = useState<string>('');
 
   // Selected quick product chips
@@ -128,7 +149,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
 
     const cleanPhone = phone.trim().replace(/[^0-9]/g, '');
     if (!phone.trim()) {
-      newErrors.phone = 'Vui lòng nhập số điện thoại để Zalo liên hệ';
+      newErrors.phone = 'Vui lòng nhập số điện thoại để shop liên hệ';
     } else if (cleanPhone.length < 9 || cleanPhone.length > 11) {
       newErrors.phone = 'Số điện thoại không hợp lệ (cần 9 - 11 chữ số)';
     }
@@ -143,6 +164,20 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
 
     if (!validateForm()) {
       return;
+    }
+
+    // Persist customer info for convenience
+    try {
+      localStorage.setItem(
+        'conan_customer_info',
+        JSON.stringify({
+          name: customerName.trim(),
+          phone: phone.trim(),
+          address: address.trim(),
+        })
+      );
+    } catch {
+      // Ignore storage errors
     }
 
     // 1. Fetch configured Facebook URL from storage settings

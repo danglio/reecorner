@@ -184,22 +184,54 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setPinError('');
   };
 
-  // Image upload handler (converts file to Base64)
+  // Image upload handler (converts file to Base64 with automatic lightweight canvas compression)
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      alert('Vui lòng chọn ảnh có dung lượng nhỏ hơn 2MB để tối ưu bộ nhớ trình duyệt.');
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Vui lòng chọn ảnh có dung lượng nhỏ hơn 10MB.');
       e.target.value = '';
       return;
     }
 
     const reader = new FileReader();
     reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        setProductForm(prev => ({ ...prev, image: reader.result as string }));
-      }
+      const dataUrl = reader.result;
+      if (typeof dataUrl !== 'string') return;
+
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDimension = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL('image/jpeg', 0.82);
+          setProductForm((prev) => ({ ...prev, image: compressed }));
+        } else {
+          setProductForm((prev) => ({ ...prev, image: dataUrl }));
+        }
+      };
+      img.onerror = () => {
+        setProductForm((prev) => ({ ...prev, image: dataUrl }));
+      };
+      img.src = dataUrl;
       e.target.value = '';
     };
     reader.readAsDataURL(file);

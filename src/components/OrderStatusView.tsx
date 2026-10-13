@@ -89,7 +89,7 @@ export const OrderStatusView: React.FC<OrderStatusViewProps> = ({
   const [hasSearched, setHasSearched] = useState<boolean>(false);
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
 
-  const settings = useMemo(() => getSettings(), []);
+  const settings = getSettings();
 
   // Perform search
   const performSearch = (codeToSearch: string, phoneToSearch?: string) => {

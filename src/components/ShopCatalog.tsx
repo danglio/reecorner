@@ -339,7 +339,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                 <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3.5">
                   <div className="space-y-1.5">
                     {/* 1. Title in pure white */}
-                    <h3 className="font-outfit font-extrabold text-white text-base sm:text-lg group-hover:text-breezy-blue transition-colors line-clamp-1 leading-snug">
+                    <h3 className="font-outfit font-extrabold text-white text-base sm:text-lg group-hover:text-breezy-blue transition-colors line-clamp-2 leading-snug">
                       {product.name}
                     </h3>
                     {/* 2. Subtitle: Rarity & BreeCorner */}
@@ -386,7 +386,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                       <span>{isAdded ? 'Đã thêm giỏ hàng' : 'Thêm giỏ hàng'}</span>
                     </button>
 
-                    {/* 4. Price Row with Vàng Cream Nắng Pill Tag */}
+                    {/* 4. Price Row with Vàng Cream Tag */}
                     <div className="flex items-center justify-between pt-2 border-t border-white/10">
                       <div className="flex items-baseline space-x-1.5">
                         <span className="text-lg sm:text-xl font-black text-white font-outfit tracking-tight">
@@ -399,14 +399,14 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                         )}
                       </div>
 
-                      <span className="px-3 py-1 rounded-full text-xs font-black bg-[#FFF4C8] text-[#051F45] shadow-sm">
-                        Vàng Cream
+                      <span className="px-2.5 py-1 rounded-full text-xs font-black bg-[#FFF4C8] text-[#051F45] shadow-sm">
+                        {discountPercent > 0 ? `Tiết kiệm ${discountPercent}%` : 'Chính Hãng'}
                       </span>
                     </div>
 
                     {/* 5. Category Pill with Matcha Tea */}
                     <div className="w-full py-1.5 px-3 rounded-full bg-[#838F58] text-white text-xs font-bold text-center shadow-sm flex items-center justify-center gap-1.5">
-                      <span>{rarityInfo ? `${rarityInfo.label} • Matcha Tea` : 'BreeCorner • Sưu Tầm'}</span>
+                      <span>{rarityInfo ? rarityInfo.label : 'BreeCorner • Sưu Tầm'}</span>
                     </div>
                   </div>
                 </div>

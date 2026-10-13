@@ -240,7 +240,7 @@ export const App: React.FC = () => {
         <div className="max-w-6xl mx-auto pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-center text-slate-500 text-[11px]">
           <p>© 2026 BREECORNER X CONAN SHOP. All rights reserved.</p>
           <p className="flex items-center justify-center gap-1">
-            Bảng màu chuẩn Breezy Blue × Vàng Cream Nắng trên nền Navy Đêm dịu mắt
+            BreeCorner × Conan Shop • Tiệm thẻ bài & vật phẩm anime chính hãng
             <Heart className="w-3 h-3 text-conan-red inline" />
           </p>
         </div>

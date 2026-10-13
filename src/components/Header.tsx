@@ -69,21 +69,22 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('shop')}
-            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 select-none ${
+            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 select-none ${
               activeTab === 'shop'
                 ? 'bg-breezy-blue text-navy-night font-extrabold shadow-md glow-breezy'
                 : 'text-slate-300 hover:text-white hover:bg-white/5'
             }`}
           >
             <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-            <span>Cửa Hàng BreeCorner</span>
+            <span className="hidden sm:inline">Cửa Hàng BreeCorner</span>
+            <span className="sm:hidden whitespace-nowrap">Cửa Hàng</span>
           </button>
 
           {/* Tab Tra Cứu Đơn */}
           <button
             type="button"
             onClick={() => setActiveTab('tracking')}
-            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 select-none ${
+            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 select-none ${
               activeTab === 'tracking'
                 ? 'bg-cream-sun text-navy-night shadow-md glow-cream font-extrabold'
                 : 'text-slate-300 hover:text-white hover:bg-white/5'

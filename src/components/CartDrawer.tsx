@@ -55,17 +55,40 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onOrderSuccess,
   onCheckoutZalo,
 }) => {
-  // Customer Info Form State
-  const [customerName, setCustomerName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+  // Customer Info Form State with persistence
+  const [customerName, setCustomerName] = useState(() => {
+    try {
+      const saved = localStorage.getItem('conan_customer_info');
+      return saved ? JSON.parse(saved).name || '' : '';
+    } catch {
+      return '';
+    }
+  });
+  const [phone, setPhone] = useState(() => {
+    try {
+      const saved = localStorage.getItem('conan_customer_info');
+      return saved ? JSON.parse(saved).phone || '' : '';
+    } catch {
+      return '';
+    }
+  });
+  const [address, setAddress] = useState(() => {
+    try {
+      const saved = localStorage.getItem('conan_customer_info');
+      return saved ? JSON.parse(saved).address || '' : '';
+    } catch {
+      return '';
+    }
+  });
   const [note, setNote] = useState('');
 
   // Validation & feedback state
   const [errors, setErrors] = useState<{ name?: string; phone?: string; address?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
+  const [orderMessage, setOrderMessage] = useState<string>('');
   const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedMessage, setCopiedMessage] = useState(false);
 
   // Normalize cart items regardless of which prop was passed
   const normalizedItems: NormalizedItem[] = useMemo(() => {
@@ -212,6 +235,22 @@ ${itemsListText}
 👉 Nhờ shop xác nhận và gửi hàng giúp mình nhé!
 🔍 Tra cứu trạng thái đơn tại web với mã: ${newOrder.id}`;
 
+      // Persist customer info for next time
+      try {
+        localStorage.setItem(
+          'conan_customer_info',
+          JSON.stringify({
+            name: customerName.trim(),
+            phone: phone.trim(),
+            address: address.trim(),
+          })
+        );
+      } catch {
+        // Ignore storage error
+      }
+
+      setOrderMessage(message);
+
       // Copy to clipboard for easy pasting into Facebook chat
       try {
         if (navigator.clipboard) {
@@ -242,9 +281,28 @@ ${itemsListText}
   };
 
   const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
+    try {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(code);
+      }
+    } catch {
+      // fallback
+    }
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const handleCopyMessage = () => {
+    if (!orderMessage) return;
+    try {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(orderMessage);
+      }
+    } catch {
+      // fallback
+    }
+    setCopiedMessage(true);
+    setTimeout(() => setCopiedMessage(false), 2500);
   };
 
   return (
@@ -345,12 +403,32 @@ ${itemsListText}
                   </div>
                 </div>
 
-                <div className="pt-2 flex flex-col gap-2">
-                  <button
-                    onClick={handleClose}
-                    className="w-full py-3 rounded-xl bg-breezy-blue text-navy-night font-extrabold text-sm shadow-lg shadow-breezy-blue/20 hover:brightness-110 transition-all"
+                <div className="pt-2 flex flex-col gap-2.5">
+                  <a
+                    href={getSettings().facebookUrl || 'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3 rounded-xl bg-gradient-to-r from-breezy-blue to-[#DCEBFA] hover:from-[#DCEBFA] hover:to-breezy-blue text-navy-night font-black text-sm shadow-lg shadow-breezy-blue/25 hover:brightness-110 flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
-                    Hoàn tất & Tiếp tục khám phá
+                    <Send className="w-4 h-4 fill-navy-night text-navy-night" />
+                    <span>Mở Facebook Người Bán Gửi Đơn</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={handleCopyMessage}
+                    className="w-full py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white border border-white/10 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-breezy-blue" />
+                    <span>{copiedMessage ? 'Đã sao chép tin nhắn đơn hàng!' : 'Sao chép lại tin nhắn đơn hàng'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="w-full py-2.5 rounded-xl bg-conan-navy hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 font-bold text-xs transition-all cursor-pointer"
+                  >
+                    Hoàn tất & Tiếp tục dạo shop
                   </button>
                 </div>
               </div>
