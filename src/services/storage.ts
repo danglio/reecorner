@@ -128,6 +128,7 @@ export const INITIAL_ORDERS: Order[] = [
 
 export const INITIAL_SETTINGS: AppSettings = {
   zaloPhone: '0901234567',
+  facebookUrl: 'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr',
   adminPin: '1412',
 };
 
@@ -435,8 +436,12 @@ export function createOrder(orderData: Omit<Order, 'id' | 'createdAt'>): Order {
 // 6. Settings API
 export function getSettings(): AppSettings {
   const cached = getStorageItem<AppSettings>(STORAGE_KEYS.SETTINGS);
-  if (cached && cached.zaloPhone && cached.adminPin) {
-    return cached;
+  if (cached && cached.adminPin) {
+    return {
+      ...INITIAL_SETTINGS,
+      ...cached,
+      facebookUrl: cached.facebookUrl || INITIAL_SETTINGS.facebookUrl,
+    };
   }
   setStorageItem(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
   return INITIAL_SETTINGS;

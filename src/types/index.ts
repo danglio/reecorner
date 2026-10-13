@@ -46,6 +46,7 @@ export interface Order {
 
 export interface AppSettings {
   zaloPhone: string; // Số điện thoại nhận đơn Zalo (mặc định '0901234567')
+  facebookUrl: string; // Đường dẫn Facebook người bán (mặc định 'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr')
   adminPin: string; // Mã PIN truy cập trang quản trị bí mật (mặc định '1412')
 }
 

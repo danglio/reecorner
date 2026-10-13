@@ -169,43 +169,52 @@ export const App: React.FC = () => {
           {/* Col 1 */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-white font-bold text-sm">
-              <span className="w-6 h-6 rounded-lg bg-conan-red flex items-center justify-center text-[10px] font-mono shadow-md">
-                #1412
+              <span className="w-6 h-6 rounded-lg bg-conan-red flex items-center justify-center text-[10px] font-mono shadow-md text-white font-black">
+                X
               </span>
-              <span>MOURI DETECTIVE AGENCY</span>
+              <span>BREECORNER X CONAN SHOP</span>
             </div>
             <p className="text-slate-400 leading-relaxed text-xs">
-              Văn phòng Thám tử Mori Kogoro & Cửa hàng thẻ bài, đạo cụ thám tử Conan Edogawa chính hãng.
+              Tiệm thẻ bài & vật phẩm sưu tầm các fandom độc quyền tại BreeCorner kết hợp Detective Conan Shop.
             </p>
-            <p className="text-[11px] text-conan-gold font-mono italic">
-              "Chỉ có một sự thật duy nhất!" (真実はいつもひとつ!)
+            <p className="text-[11px] text-bree-moon font-mono italic">
+              "Bảo vật trong tầm tay • Trải nghiệm sưu tầm trọn vẹn"
             </p>
           </div>
 
           {/* Col 2 */}
           <div className="space-y-2">
             <h4 className="text-white font-semibold text-xs tracking-wider uppercase mb-3">
-              Liên Hệ & Hỗ Trợ
+              Liên Hệ & Đặt Hàng
             </h4>
             <p className="flex items-center gap-2">
-              <Phone className="w-3.5 h-3.5 text-conan-gold" />
-              <span>Zalo Đặt Hàng: </span>
+              <Sparkles className="w-3.5 h-3.5 text-bree-baby" />
+              <span>Facebook Người Bán: </span>
+              <a
+                href={settings.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-bree-baby hover:underline truncate max-w-[200px]"
+                title="Mở Facebook người bán"
+              >
+                BreeCorner (Nhắn tin ngay)
+              </a>
+            </p>
+            <p className="flex items-center gap-2">
+              <Phone className="w-3.5 h-3.5 text-bree-moon" />
+              <span>Zalo hỗ trợ: </span>
               <a
                 href={`https://zalo.me/${settings.zaloPhone}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-conan-gold hover:underline"
+                className="font-mono text-bree-moon hover:underline"
               >
                 {settings.zaloPhone}
               </a>
             </p>
             <p className="flex items-center gap-2">
               <Shield className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Địa chỉ: Tầng 2, Số 5 Phố Beika, Tokyo</span>
-            </p>
-            <p className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-conan-red" />
-              <span>Cam kết: Thẻ bài SSR & Đạo cụ chất lượng cao</span>
+              <span>Cam kết: 100% Chính hãng & Uy tín toàn quốc</span>
             </p>
           </div>
 
@@ -220,18 +229,18 @@ export const App: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsAdminOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-conan-navy hover:bg-slate-800 text-conan-gold border border-conan-gold/30 text-xs font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-conan-navy hover:bg-slate-800 text-bree-moon border border-bree-baby/30 text-xs font-medium transition-colors"
             >
-              <Shield className="w-3.5 h-3.5" />
-              Đăng nhập Quản trị viên
+              <Shield className="w-3.5 h-3.5 text-bree-baby" />
+              Đăng nhập Quản trị viên (#1412)
             </button>
           </div>
         </div>
 
         <div className="max-w-6xl mx-auto pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-center text-slate-500 text-[11px]">
-          <p>© 2026 Văn Phòng Thám Tử Mori x Detective Conan Shop. All rights reserved.</p>
+          <p>© 2026 BREECORNER X CONAN SHOP. All rights reserved.</p>
           <p className="flex items-center justify-center gap-1">
-            Thiết kế lấy cảm hứng từ Thám Tử Lừng Danh Conan & Tra cứu đơn enne.vn
+            Giao diện dịu mắt Xanh Baby × Vàng Ánh Trăng • Hệ thống theo dõi đơn hàng
             <Heart className="w-3 h-3 text-conan-red inline" />
           </p>
         </div>

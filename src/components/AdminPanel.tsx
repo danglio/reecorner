@@ -90,6 +90,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // Settings state
   const [settings, setSettings] = useState<AppSettings>({
     zaloPhone: '0901234567',
+    facebookUrl: 'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr',
     adminPin: '1412'
   });
   const [newPin, setNewPin] = useState<string>('');
@@ -253,6 +254,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
     const updated: AppSettings = {
       zaloPhone: settings.zaloPhone.trim(),
+      facebookUrl: settings.facebookUrl.trim() || 'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr',
       adminPin: finalPin
     };
 
@@ -294,7 +296,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </span>
               </h2>
               <p className="text-xs text-slate-400">
-                Văn phòng Thám tử Conan • Hệ thống quản lý vật phẩm & đơn hàng
+                BreeCorner x Conan Shop • Hệ thống quản lý vật phẩm & đơn hàng
               </p>
             </div>
           </div>
@@ -421,7 +423,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 }`}
               >
                 <Phone className="w-4 h-4" />
-                Cài Đặt Zalo & PIN
+                Cài Đặt Facebook, Zalo & PIN
               </button>
             </div>
 
@@ -871,13 +873,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
               )}
 
-              {/* TAB 3: SETTINGS & ZALO CONFIG */}
+              {/* TAB 3: SETTINGS & SOCIAL CONFIG */}
               {activeTab === 'settings' && (
                 <div className="max-w-xl mx-auto space-y-6">
                   <div>
-                    <h3 className="text-base font-bold text-white">Cấu hình Zalo Người Bán & Mã PIN</h3>
+                    <h3 className="text-base font-bold text-white">Cấu hình Facebook, Zalo & Mã PIN</h3>
                     <p className="text-xs text-slate-400">
-                      Thay đổi số điện thoại Zalo tiếp nhận đơn và mã số đăng nhập quản trị bí mật
+                      Thay đổi đường dẫn Facebook người bán, số điện thoại Zalo tiếp nhận đơn và mã số quản trị bí mật
                     </p>
                   </div>
 
@@ -891,8 +893,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   <form onSubmit={handleSaveSettings} className="space-y-5 bg-slate-950/40 p-5 rounded-2xl border border-white/10">
                     <div>
                       <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-2">
+                        <Tag className="w-4 h-4 text-bree-baby" />
+                        Đường dẫn Facebook Người Bán (Tiếp nhận đơn hàng trực tiếp) *
+                      </label>
+                      <input
+                        type="url"
+                        required
+                        value={settings.facebookUrl}
+                        onChange={(e) => setSettings({ ...settings, facebookUrl: e.target.value })}
+                        placeholder="https://www.facebook.com/share/..."
+                        className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white font-mono text-sm focus:border-conan-gold focus:outline-none"
+                      />
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        Mặc định: link Facebook cá nhân người bán được khách gửi qua tin nhắn.
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-2">
                         <Phone className="w-4 h-4 text-conan-gold" />
-                        Số điện thoại Zalo người bán (Tiếp nhận tin nhắn đặt hàng) *
+                        Số điện thoại Zalo người bán (Hỗ trợ phụ) *
                       </label>
                       <input
                         type="text"
@@ -902,9 +922,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         placeholder="Ví dụ: 0901234567..."
                         className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white font-mono text-sm focus:border-conan-gold focus:outline-none"
                       />
-                      <p className="text-[11px] text-slate-400 mt-1">
-                        Tất cả các nút "Gửi đơn qua Zalo" trên web sẽ tự động chuyển hướng tới số này.
-                      </p>
                     </div>
 
                     <div className="border-t border-white/10 pt-4 space-y-3">

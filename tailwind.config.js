@@ -25,9 +25,21 @@ export default {
           light: '#FF6B6B',
         },
         'conan-gold': {
-          DEFAULT: '#F59E0B',
-          light: '#FBBF24',
-          dark: '#D97706',
+          DEFAULT: '#FEFDD0', // Vàng Ánh Trăng dịu mắt
+          light: '#FFFEE6',
+          dark: '#E2E1B0',
+          accent: '#F59E0B',
+        },
+        'bree-baby': {
+          DEFAULT: '#7DD3FC', // Xanh Baby
+          light: '#BAE6FD',
+          dark: '#38BDF8',
+          soft: '#E0F2FE',
+        },
+        'bree-moon': {
+          DEFAULT: '#FEFDD0', // Vàng Ánh Trăng #FEFDD0
+          soft: '#FFFEE6',
+          dark: '#E2E1B0',
         },
       },
       fontFamily: {

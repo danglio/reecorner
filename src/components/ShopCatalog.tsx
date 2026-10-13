@@ -83,40 +83,38 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
 
   return (
     <div className="w-full space-y-8 animate-fadeIn">
-      {/* 1. Conan Shop Banner */}
-      <section className="relative overflow-hidden rounded-2xl border border-conan-gold/30 bg-gradient-to-r from-conan-navy-dark via-conan-navy to-conan-blue/40 p-6 sm:p-8 shadow-2xl">
+      {/* 1. BreeCorner Shop Banner */}
+      <section className="relative overflow-hidden rounded-2xl border border-bree-baby/30 bg-gradient-to-r from-conan-navy-dark via-conan-navy to-conan-blue/40 p-6 sm:p-8 shadow-2xl">
         {/* Glow Effects */}
-        <div className="absolute -top-16 -right-16 w-64 h-64 bg-conan-gold/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-conan-red/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -right-16 w-64 h-64 bg-bree-baby/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-conan-red/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-conan-gold/15 border border-conan-gold/30 text-conan-gold text-xs font-semibold tracking-wide">
-              <Sparkles className="w-3.5 h-3.5 text-conan-gold animate-spin-slow" />
-              <span>KHO BÁU BẢO BỐI & THẺ BÀI THÁM TỬ</span>
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-bree-baby/15 border border-bree-baby/30 text-bree-moon text-xs font-semibold tracking-wide">
+              <Sparkles className="w-3.5 h-3.5 text-bree-baby animate-spin-slow" />
+              <span>✨ KHO BÁU BẢO BỐI & THẺ BÀI SƯU TẦM BREECORNER</span>
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white font-outfit tracking-tight leading-tight">
-              Cửa Hàng Thẻ Bài Conan & Thiết Bị{' '}
-              <span className="text-conan-gold">Tiến Sĩ Agasa</span>
+              Cửa Hàng Thẻ Bài Conan & Kho Báu{' '}
+              <span className="text-bree-moon">BreeCorner</span>
             </h2>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-              Sở hữu các thẻ bài Hologram SSR/UR phiên bản giới hạn kỷ niệm Vụ Án Thế Kỷ
-              và những thiết bị phá án đặc chế độc quyền. Giao hàng toàn quốc bảo mật,
-              xác nhận nhanh qua Zalo!
+              Sở hữu các thẻ bài các fandom cùng những vật phẩm sưu tầm độc quyền tại BreeCorner. Giao hàng toàn quốc bảo mật, xác nhận nhanh qua Facebook!
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-slate-300">
-              <span className="flex items-center space-x-1.5">
+              <span className="flex items-center space-x-1.5 bg-slate-900/40 px-2.5 py-1 rounded-lg border border-white/5">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>100% Chính hãng & Độc quyền</span>
+                <span className="font-medium text-white">✅ 100% Chính hãng & Uy tín</span>
               </span>
-              <span className="flex items-center space-x-1.5">
+              <span className="flex items-center space-x-1.5 bg-slate-900/40 px-2.5 py-1 rounded-lg border border-white/5">
                 <Flame className="w-4 h-4 text-conan-red" />
-                <span>Thẻ Hologram 3D mạ vàng</span>
+                <span className="font-medium text-white">🔥 Thẻ Bài & Bảo Bối Sưu Tầm</span>
               </span>
-              <span className="flex items-center space-x-1.5">
-                <Zap className="w-4 h-4 text-conan-gold" />
-                <span>Đặt đơn Zalo nhận ngay mã tra cứu</span>
+              <span className="flex items-center space-x-1.5 bg-slate-900/40 px-2.5 py-1 rounded-lg border border-white/5">
+                <Zap className="w-4 h-4 text-bree-baby" />
+                <span className="font-medium text-white">⚡ Xác Nhận & Giao Hàng Siêu Tốc</span>
               </span>
             </div>
           </div>
@@ -124,16 +122,16 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
           {/* Quick Counter Card */}
           <div className="flex-shrink-0 grid grid-cols-2 gap-3 p-4 rounded-xl bg-slate-900/60 border border-white/10 backdrop-blur-md">
             <div className="p-3 text-center rounded-lg bg-conan-navy-light/40 border border-white/5">
-              <span className="text-2xl font-black text-conan-gold font-outfit">
+              <span className="text-2xl font-black text-bree-moon font-outfit">
                 {products.length}
               </span>
               <p className="text-[11px] text-slate-400 mt-0.5">Vật Phẩm Sẵn Có</p>
             </div>
             <div className="p-3 text-center rounded-lg bg-conan-navy-light/40 border border-white/5">
-              <span className="text-2xl font-black text-conan-red font-outfit">
+              <span className="text-2xl font-black text-bree-baby font-outfit">
                 100%
               </span>
-              <p className="text-[11px] text-slate-400 mt-0.5">Chống Giả Mạo</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">Kho BreeCorner</p>
             </div>
           </div>
         </div>

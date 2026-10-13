@@ -137,18 +137,19 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle primary action: "GỬI ĐƠN QUA ZALO NGƯỜI BÁN"
-  const handleSendZaloOrder = (e: React.FormEvent) => {
+  // Handle primary action: "LIÊN HỆ ĐẶT HÀNG QUA FACEBOOK"
+  const handleSendFacebookOrder = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    // 1. Fetch configured Zalo phone number from storage settings
+    // 1. Fetch configured Facebook URL from storage settings
     const settings = getSettings();
-    const rawZaloPhone = settings?.zaloPhone || '0901234567';
-    const cleanZaloPhone = rawZaloPhone.replace(/[^0-9]/g, '') || '0901234567';
+    const facebookUrl =
+      settings?.facebookUrl ||
+      'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr';
 
     // 2. Build items interest list
     const itemsList: string[] = [...selectedQuickItems];
@@ -159,15 +160,15 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
     const itemsSection =
       itemsList.length > 0
         ? itemsList.map((item, idx) => `  ${idx + 1}. ${item}`).join('\n')
-        : '  • Tư vấn danh mục thẻ bài & bảo bối Conan hot nhất';
+        : '  • Tư vấn danh mục thẻ bài & vật phẩm sưu tầm hot nhất';
 
     const addressSection = address.trim()
       ? address.trim()
-      : '(Chưa cung cấp - Tư vấn & chốt địa chỉ qua Zalo)';
+      : '(Chưa cung cấp - Tư vấn & chốt địa chỉ qua Facebook)';
 
-    // 3. Format pre-filled message with customer details in Detective theme
-    const zaloMessage = [
-      '🕵️ [VĂN PHÒNG THÁM TỬ MORI x TIỆM CONAN] ĐẶT HÀNG NHANH',
+    // 3. Format message in clipboard for customer convenience
+    const orderDetails = [
+      '🕵️ [BREECORNER X CONAN SHOP] ĐẶT HÀNG / TƯ VẤN NHANH',
       '─────────────────────────────────────',
       `👤 Khách hàng: ${customerName.trim()}`,
       `📞 Số điện thoại: ${phone.trim()}`,
@@ -176,17 +177,22 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
       '📦 Vật phẩm quan tâm:',
       itemsSection,
       '─────────────────────────────────────',
-      '⚡ Xin chào shop, mình gửi yêu cầu đặt hàng nhanh từ website Tiệm Thám Tử Conan.',
-      'Vui lòng kiểm tra và gửi báo giá / xác nhận đơn giúp mình nhé! Cảm ơn shop.',
+      '⚡ Xin chào shop BreeCorner, mình muốn đặt hàng/tư vấn các vật phẩm trên từ website. Nhờ shop phản hồi giúp mình nhé!',
     ].join('\n');
 
-    // 4. Construct direct Zalo URL and open in new tab
-    const zaloUrl = `https://zalo.me/${cleanZaloPhone}?text=${encodeURIComponent(zaloMessage)}`;
-
     try {
-      window.open(zaloUrl, '_blank', 'noopener,noreferrer');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(orderDetails);
+      }
     } catch {
-      window.location.href = zaloUrl;
+      // Ignore clipboard write error if denied
+    }
+
+    // 4. Open Facebook URL in new tab
+    try {
+      window.open(facebookUrl, '_blank', 'noopener,noreferrer');
+    } catch {
+      window.location.href = facebookUrl;
     }
 
     // 5. Trigger Conan BGM audio and close modal
@@ -232,12 +238,12 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
               <ConanBowtieIcon className="w-7 h-7 sm:w-8 sm:h-8 text-conan-red" isAnimated={true} />
             </div>
             <div className="text-left">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-conan-gold/15 text-conan-gold border border-conan-gold/40">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider bg-conan-gold/15 text-bree-moon border border-conan-gold/40">
                 <Sparkles className="w-3 h-3 text-conan-gold animate-spin" style={{ animationDuration: '4s' }} />
-                Hồ Sơ Mật #1412
+                ✨ HỒ SƠ BẢO MẬT #1412 x BREECORNER
               </span>
-              <p className="text-[11px] sm:text-xs font-semibold text-slate-300 tracking-wide uppercase">
-                VĂN PHÒNG THÁM TỬ MORI
+              <p className="text-[11px] sm:text-xs font-semibold text-bree-baby tracking-wide uppercase mt-0.5">
+                BreeCorner
               </p>
             </div>
           </div>
@@ -246,12 +252,12 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             id="welcome-modal-title"
             className="text-xl sm:text-2xl md:text-[26px] font-outfit font-extrabold tracking-tight text-white leading-snug"
           >
-            VĂN PHÒNG THÁM TỬ MORI <span className="text-conan-gold">x</span> TIỆM VẬT PHẨM CONAN
+            BREECORNER <span className="text-conan-red font-black">X</span> <span className="text-bree-moon">CONAN SHOP</span>
           </h1>
 
           <p className="mt-1.5 text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-            Chào mừng bạn đến với tiệm thẻ bài & bảo bối Conan! Đặt hàng nhanh nhận tư vấn tức thì qua{' '}
-            <span className="text-conan-gold font-semibold">Zalo Người Bán</span> hoặc bỏ qua để dạo quanh shop.
+            Chào mừng bạn đến với tiệm thẻ bài & vật phẩm sưu tầm BreeCorner! Đặt hàng nhanh nhận tư vấn tức thì qua{' '}
+            <span className="text-bree-baby font-semibold underline decoration-bree-baby/50">Facebook Người Bán</span> hoặc bỏ qua để dạo quanh shop.
           </p>
 
           {/* Feature Micro-Badges */}
@@ -261,8 +267,8 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
               Thẻ Bài Chính Hãng
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-conan-blue/40 border border-conan-blue/60 text-slate-200">
-              <Clock className="w-3.5 h-3.5 text-conan-gold" />
-              Phản Hồi Zalo Nhanh
+              <Clock className="w-3.5 h-3.5 text-bree-moon" />
+              Phản Hồi Facebook Nhanh
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-conan-blue/40 border border-conan-blue/60 text-slate-200">
               <Radio className="w-3.5 h-3.5 text-conan-red animate-pulse" />
@@ -272,11 +278,11 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
         </div>
 
         {/* Modal Body & Quick Order Form */}
-        <form onSubmit={handleSendZaloOrder} className="p-5 sm:p-7 pt-4 sm:pt-5 space-y-4">
+        <form onSubmit={handleSendFacebookOrder} className="p-5 sm:p-7 pt-4 sm:pt-5 space-y-4">
           <div className="text-left">
-            <h2 className="text-xs font-bold text-conan-gold uppercase tracking-wider flex items-center gap-1.5 mb-3">
-              <Package className="w-4 h-4 text-conan-gold" />
-              Đặt Hàng / Đăng Ký Tư Vấn Nhanh Qua Zalo
+            <h2 className="text-xs font-bold text-bree-moon uppercase tracking-wider flex items-center gap-1.5 mb-3">
+              <Package className="w-4 h-4 text-bree-baby" />
+              Đặt Hàng / Đăng Ký Tư Vấn Nhanh Qua Facebook
             </h2>
 
             {/* Field: Full Name (Mandatory) */}
@@ -438,23 +444,23 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
 
           {/* Action Buttons */}
           <div className="pt-2 space-y-2.5">
-            {/* Primary Action Button: Gửi Đơn Qua Zalo */}
+            {/* Primary Action Button: Liên Hệ Đặt Hàng Qua Facebook */}
             <button
               type="submit"
               className="w-full py-3 px-4 rounded-xl font-bold text-white bg-conan-red hover:bg-conan-red-hover active:scale-[0.99] transition-all duration-200 shadow-lg shadow-conan-red/30 glow-red flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
             >
               <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span>GỬI ĐƠN QUA ZALO NGƯỜI BÁN</span>
+              <span>LIÊN HỆ ĐẶT HÀNG QUA FACEBOOK NGƯỜI BÁN</span>
             </button>
 
             {/* Secondary Action Button: Bỏ Qua Để Xem Shop */}
             <button
               type="button"
               onClick={handleSkipToBrowse}
-              className="w-full py-2.5 px-4 rounded-xl font-semibold text-slate-300 hover:text-white bg-conan-blue/40 hover:bg-conan-blue/70 border border-conan-gold/30 hover:border-conan-gold/60 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm group cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl font-semibold text-slate-200 hover:text-white bg-conan-blue/50 hover:bg-conan-blue/80 border border-bree-baby/40 hover:border-bree-baby/80 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm group cursor-pointer"
             >
               <span>BỎ QUA ĐỂ XEM SHOP</span>
-              <ArrowRight className="w-4 h-4 text-conan-gold group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 text-bree-moon group-hover:translate-x-1 transition-transform" />
             </button>
 
             {/* Micro Audio Hint */}

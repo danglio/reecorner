@@ -149,16 +149,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleCheckoutZalo = () => {
+  const handleCheckoutFacebook = () => {
     if (normalizedItems.length === 0) return;
     if (!validateForm()) return;
 
     setIsSubmitting(true);
 
     try {
-      // 1. Get settings for recipient Zalo phone
+      // 1. Get settings for recipient Facebook URL
       const settings = getSettings();
-      const zaloPhone = (settings.zaloPhone || '0901234567').replace(/[^0-9]/g, '');
+      const facebookUrl =
+        settings.facebookUrl ||
+        'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr';
 
       // 2. Prepare order items
       const orderItems: OrderItem[] = normalizedItems.map((item) => ({
@@ -183,7 +185,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         status: 'pending',
       });
 
-      // 4. Compose Zalo message
+      // 4. Compose order message
       const itemsListText = orderItems
         .map(
           (item, idx) =>
@@ -193,7 +195,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         )
         .join('\n');
 
-      const message = `🔍 [VĂN PHÒNG THÁM TỬ MORI] ĐƠN HÀNG MỚI
+      const message = `🔍 [BREECORNER X CONAN SHOP] ĐƠN HÀNG MỚI
 ====================================
 🆔 Mã đơn hàng: ${newOrder.id}
 👤 Khách hàng: ${newOrder.customerName}
@@ -201,7 +203,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 🏠 Địa chỉ nhận: ${newOrder.address}
 📝 Ghi chú: ${newOrder.note || 'Không có'}
 ------------------------------------
-📦 DANH SÁCH BẢO BỐI / THẺ BÀI:
+📦 DANH SÁCH BẢO BỐI / THẺ BÀI SƯU TẦM:
 ${itemsListText}
 ------------------------------------
 💰 TỔNG THANH TOÁN: ${formatVND(newOrder.total)}
@@ -210,9 +212,21 @@ ${itemsListText}
 👉 Nhờ shop xác nhận và gửi hàng giúp mình nhé!
 🔍 Tra cứu trạng thái đơn tại web với mã: ${newOrder.id}`;
 
-      // 5. Open Zalo chat
-      const zaloUrl = `https://zalo.me/${zaloPhone}?text=${encodeURIComponent(message)}`;
-      window.open(zaloUrl, '_blank', 'noopener,noreferrer');
+      // Copy to clipboard for easy pasting into Facebook chat
+      try {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(message);
+        }
+      } catch {
+        // Ignore clipboard write error
+      }
+
+      // 5. Open Facebook profile / chat
+      try {
+        window.open(facebookUrl, '_blank', 'noopener,noreferrer');
+      } catch {
+        window.location.href = facebookUrl;
+      }
 
       // 6. Notify callbacks and transition state
       if (onOrderSuccess) onOrderSuccess(newOrder);
@@ -221,7 +235,7 @@ ${itemsListText}
       setCreatedOrder(newOrder);
       onClearCart();
     } catch (err) {
-      console.error('Lỗi khi xuất đơn hàng qua Zalo:', err);
+      console.error('Lỗi khi xuất đơn hàng qua Facebook:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -285,13 +299,13 @@ ${itemsListText}
 
                 <div className="space-y-2">
                   <span className="text-xs uppercase tracking-wider font-semibold text-emerald-400">
-                    VỤ ÁN ĐÃ ĐƯỢC TIẾP NHẬN
+                    ĐƠN HÀNG ĐÃ ĐƯỢC TIẾP NHẬN
                   </span>
                   <h3 className="text-xl font-bold font-outfit text-white">
                     Đã Khởi Tạo Đơn Hàng Thành Công!
                   </h3>
                   <p className="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed">
-                    Hệ thống đã tự động lưu hồ sơ đơn hàng và mở cửa sổ Zalo với đầy đủ chi tiết để bạn gửi tới văn phòng thám tử.
+                    Hệ thống đã tự động lưu hồ sơ đơn hàng và sao chép chi tiết vào bộ nhớ đệm, đồng thời chuyển hướng tới Facebook Người Bán để bạn gửi chốt đơn tức thì.
                   </p>
                 </div>
 
@@ -587,14 +601,14 @@ ${itemsListText}
                 </div>
               </div>
 
-              {/* Zalo Checkout Button */}
+              {/* Facebook Checkout Button */}
               <button
-                onClick={handleCheckoutZalo}
+                onClick={handleCheckoutFacebook}
                 disabled={isSubmitting}
                 className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-conan-red to-conan-red-hover hover:from-conan-red-hover hover:to-conan-red text-white font-extrabold text-sm shadow-xl shadow-conan-red/25 flex items-center justify-center space-x-2 transition-all transform active:scale-98 disabled:opacity-60 cursor-pointer"
               >
                 <Send className="w-4 h-4 fill-white" />
-                <span>XÁC NHẬN ĐẶT HÀNG QUA ZALO</span>
+                <span>XÁC NHẬN ĐẶT HÀNG QUA FACEBOOK</span>
               </button>
 
               <div className="flex items-center justify-center space-x-1.5 text-[11px] text-slate-400 pt-1">
