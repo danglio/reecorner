@@ -82,96 +82,55 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
 
   return (
     <div className="w-full space-y-8 animate-fadeIn">
-      {/* 1. BreeCorner 5-Color Showcase Banner (Chuẩn 100% Theo Ảnh Thiết Kế) */}
-      <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-breezy-blue/40 bg-gradient-to-br from-[#051F45]/95 via-[#0A2754]/90 to-[#123B72]/80 p-5 sm:p-7 shadow-2xl backdrop-blur-xl">
-        {/* Glow ambient spots */}
+      {/* 1. BreeCorner Shop Banner (Cập Nhật Chuẩn Theo Yêu Cầu 3 Trong PDF) */}
+      <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-breezy-blue/40 bg-gradient-to-r from-[#03142E] via-[#051F45] to-[#0D2C5B] p-6 sm:p-8 shadow-2xl">
+        {/* Glow Effects */}
         <div className="absolute -top-16 -right-16 w-64 h-64 bg-breezy-blue/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-cream-sun/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-matcha-tea/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-cream-sun/15 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 space-y-6">
-          {/* Header Title from Design */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-5">
-            <div>
-              <div className="flex items-center gap-2 text-white font-outfit font-extrabold text-xl sm:text-2xl">
-                <span className="text-breezy-blue">BreeCorner</span>
-                <span className="text-white/40">-</span>
-                <span>GÓC THẺ BÀI & BÁU VẬT</span>
-              </div>
-              <p className="text-xs sm:text-sm text-cream-sun font-bold uppercase tracking-wider mt-1 flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-breezy-blue" />
-                BẢNG MÀU CHÍNH CHỌN LỌC (TƯƠI SÁNG, DỊU MẮT)
-              </p>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-3 max-w-2xl">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-breezy-blue/15 border border-breezy-blue/30 text-cream-sun text-xs font-semibold tracking-wide">
+              <Sparkles className="w-3.5 h-3.5 text-breezy-blue animate-spin-slow" />
+              <span>✨ KHO BÁU BẢO BỐI & THẺ BÀI SƯU TẦM BREECORNER</span>
             </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white font-outfit tracking-tight leading-tight">
+              Cửa Hàng Thẻ Bài Conan & Kho Báu{' '}
+              <span className="text-cream-sun font-black">BreeCorner</span>
+            </h2>
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+              Sở hữu các thẻ bài các fandom cùng những vật phẩm sưu tầm độc quyền tại BreeCorner. Giao hàng toàn quốc bảo mật, xác nhận nhanh qua Facebook!
+            </p>
 
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-navy-night/90 text-white border border-breezy-blue/40 shadow-sm">
+            <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-300">
+              <span className="flex items-center space-x-1.5 bg-slate-900/60 px-3 py-1.5 rounded-xl border border-breezy-blue/20">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Chuẩn 5 Mã Màu Thiết Kế</span>
+                <span className="font-semibold text-white">✅ 100% Chính hãng & Uy tín</span>
+              </span>
+              <span className="flex items-center space-x-1.5 bg-slate-900/60 px-3 py-1.5 rounded-xl border border-matcha-tea/30">
+                <span className="w-2 h-2 rounded-full bg-matcha-tea" />
+                <span className="font-semibold text-white">🔥 Thẻ Bài & Bảo Bối Sưu Tầm</span>
+              </span>
+              <span className="flex items-center space-x-1.5 bg-slate-900/60 px-3 py-1.5 rounded-xl border border-breezy-blue/20">
+                <Zap className="w-4 h-4 text-breezy-blue" />
+                <span className="font-semibold text-white">⚡ Xác Nhận & Giao Siêu Tốc</span>
               </span>
             </div>
           </div>
 
-          {/* 5 Core Color Circles Strip - 100% Theo Ảnh Khách Gửi */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-            {/* Color 1: Breezy Blue */}
-            <div className="p-3 rounded-2xl bg-slate-900/70 border border-breezy-blue/40 hover:border-breezy-blue transition-all shadow-md group">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#BED9F4] shadow-md border-2 border-white/30 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <div className="min-w-0">
-                  <h4 className="text-xs font-extrabold text-white truncate">Breezy Blue</h4>
-                  <p className="text-[11px] font-mono text-breezy-blue font-bold">#BED9F4</p>
-                  <p className="text-[10px] text-slate-300 leading-tight truncate">Màu nền chính - Tươi mới, êm đềm</p>
-                </div>
-              </div>
+          {/* Quick Counter Card */}
+          <div className="flex-shrink-0 grid grid-cols-2 gap-3 p-4 rounded-xl bg-slate-900/80 border border-breezy-blue/30 backdrop-blur-md">
+            <div className="p-3 text-center rounded-lg bg-navy-night/80 border border-white/5">
+              <span className="text-2xl font-black text-cream-sun font-outfit">
+                {products.length}
+              </span>
+              <p className="text-[11px] text-slate-300 mt-0.5">Vật Phẩm Sẵn Có</p>
             </div>
-
-            {/* Color 2: Vàng Cream Nắng */}
-            <div className="p-3 rounded-2xl bg-slate-900/70 border border-cream-sun/40 hover:border-cream-sun transition-all shadow-md group">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#FFF4C8] shadow-md border-2 border-white/30 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <div className="min-w-0">
-                  <h4 className="text-xs font-extrabold text-white truncate">Vàng Cream Nắng</h4>
-                  <p className="text-[11px] font-mono text-cream-sun font-bold">#FFF4C8</p>
-                  <p className="text-[10px] text-slate-300 leading-tight truncate">Màu điểm nhấn phụ, làm ấm không gian</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Color 3: Matcha Tea */}
-            <div className="p-3 rounded-2xl bg-slate-900/70 border border-matcha-tea/50 hover:border-matcha-tea transition-all shadow-md group">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#838F58] shadow-md border-2 border-white/30 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <div className="min-w-0">
-                  <h4 className="text-xs font-extrabold text-white truncate">Matcha Tea</h4>
-                  <p className="text-[11px] font-mono text-[#A4B56C] font-bold">#838F58</p>
-                  <p className="text-[10px] text-slate-300 leading-tight truncate">Màu chữ, icon, điểm nhấn trẻ trung</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Color 4: Mây Trắng */}
-            <div className="p-3 rounded-2xl bg-slate-900/70 border border-white/30 hover:border-white transition-all shadow-md group">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#FFFFFF] shadow-md border-2 border-slate-300 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <div className="min-w-0">
-                  <h4 className="text-xs font-extrabold text-white truncate">Mây Trắng</h4>
-                  <p className="text-[11px] font-mono text-slate-200 font-bold">#FFFFFF</p>
-                  <p className="text-[10px] text-slate-300 leading-tight truncate">Màu nền văn/sạch - bản/icon</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Color 5: Navy Đêm */}
-            <div className="p-3 rounded-2xl bg-slate-900/70 border border-blue-400/40 hover:border-blue-400 transition-all shadow-md group">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#051F45] shadow-md border-2 border-breezy-blue/40 flex-shrink-0 group-hover:scale-110 transition-transform" />
-                <div className="min-w-0">
-                  <h4 className="text-xs font-extrabold text-white truncate">Navy Đêm</h4>
-                  <p className="text-[11px] font-mono text-blue-300 font-bold">#051F45</p>
-                  <p className="text-[10px] text-slate-300 leading-tight truncate">Chỉ chìm labels trong màn Giảm Độ Chói</p>
-                </div>
-              </div>
+            <div className="p-3 text-center rounded-lg bg-navy-night/80 border border-white/5">
+              <span className="text-2xl font-black text-breezy-blue font-outfit">
+                100%
+              </span>
+              <p className="text-[11px] text-slate-300 mt-0.5">Kho BreeCorner</p>
             </div>
           </div>
         </div>
@@ -358,13 +317,13 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                   <div className="space-y-1.5">
                     {/* 1. Title in pure white */}
                     <h3 className="font-outfit font-extrabold text-white text-base sm:text-lg group-hover:text-breezy-blue transition-colors line-clamp-1 leading-snug">
-                      TIÊU ĐỀ SẢN PHẨM: "{product.name}"
+                      {product.name}
                     </h3>
-                    {/* 2. Subtitle: Vàng Cream Nắng - Breezy Blue */}
+                    {/* 2. Subtitle: Rarity & BreeCorner */}
                     <p className="text-xs font-semibold text-breezy-blue flex items-center gap-1.5">
-                      <span className="text-cream-sun font-bold">Vàng Cream Nắng</span>
-                      <span className="text-white/40">-</span>
-                      <span className="text-breezy-blue font-bold">Breezy Blue</span>
+                      <span className="text-cream-sun font-bold">{rarityInfo.label}</span>
+                      <span className="text-white/40">•</span>
+                      <span className="text-breezy-blue font-bold">BreeCorner Sưu Tầm</span>
                     </p>
                     <p className="text-xs text-slate-300/80 line-clamp-2 leading-relaxed pt-0.5">
                       {product.description}
@@ -414,13 +373,13 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                       </div>
 
                       <span className="px-3 py-1 rounded-full text-xs font-black bg-[#FFF4C8] text-[#051F45] shadow-sm">
-                        Vàng Cream Nắng
+                        Vàng Cream
                       </span>
                     </div>
 
                     {/* 5. Category Pill with Matcha Tea */}
                     <div className="w-full py-1.5 px-3 rounded-full bg-[#838F58] text-white text-xs font-bold text-center shadow-sm flex items-center justify-center gap-1.5">
-                      <span>Bảo Bối Agasa - Matcha Tea</span>
+                      <span>{product.rarity === 'DETECTIVE' ? 'Bảo Bối Agasa' : 'Thẻ Bài Sưu Tầm'} • Matcha Tea</span>
                     </div>
                   </div>
                 </div>
