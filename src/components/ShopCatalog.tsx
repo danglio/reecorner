@@ -22,7 +22,7 @@ export interface ShopCatalogProps {
 
 type RarityFilter = 'ALL' | ProductRarity;
 
-const RARITY_TABS: { id: RarityFilter; label: string; countBadge?: string }[] = [
+const BASE_RARITY_TABS: { id: RarityFilter; label: string }[] = [
   { id: 'ALL', label: 'Tất cả bảo bối' },
   { id: 'SSR', label: 'SSR Cực Hiếm' },
   { id: 'UR', label: 'UR Huyền Thoại' },
@@ -48,6 +48,19 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
       setProducts(getProducts());
     }
   }, [initialProducts]);
+
+  // Dynamic tabs: Base tabs + any custom rarities found in products
+  const rarityTabs = useMemo(() => {
+    const baseIds = new Set(BASE_RARITY_TABS.map((t) => t.id.toUpperCase()));
+    const customRarities = Array.from(new Set(products.map((p) => p.rarity))).filter(
+      (r) => r && !baseIds.has(r.toUpperCase())
+    );
+    const customTabs = customRarities.map((r) => ({
+      id: r as RarityFilter,
+      label: r,
+    }));
+    return [...BASE_RARITY_TABS, ...customTabs];
+  }, [products]);
 
   // Filter products by rarity and search query
   const filteredProducts = useMemo(() => {
@@ -141,7 +154,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           {/* Rarity Tabs - Bảng màu dịu mắt */}
           <div className="flex items-center overflow-x-auto pb-2 lg:pb-0 gap-2 scrollbar-none">
-            {RARITY_TABS.map((tab) => {
+            {rarityTabs.map((tab) => {
               const active = selectedRarity === tab.id;
               return (
                 <button
@@ -379,7 +392,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
 
                     {/* 5. Category Pill with Matcha Tea */}
                     <div className="w-full py-1.5 px-3 rounded-full bg-[#838F58] text-white text-xs font-bold text-center shadow-sm flex items-center justify-center gap-1.5">
-                      <span>{product.rarity === 'DETECTIVE' ? 'Bảo Bối Agasa' : 'Thẻ Bài Sưu Tầm'} • Matcha Tea</span>
+                      <span>{rarityInfo.label} • Matcha Tea</span>
                     </div>
                   </div>
                 </div>

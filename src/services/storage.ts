@@ -223,7 +223,8 @@ export function getRarityBadgeInfo(rarity: ProductRarity): {
   label: string;
   badgeClass: string;
 } {
-  switch (rarity) {
+  const normalized = (rarity || '').trim().toUpperCase();
+  switch (normalized) {
     case 'SSR':
       return {
         label: 'SSR Cực Hiếm',
@@ -251,8 +252,8 @@ export function getRarityBadgeInfo(rarity: ProductRarity): {
       };
     default:
       return {
-        label: rarity,
-        badgeClass: 'bg-slate-700/50 text-slate-300 border border-slate-600',
+        label: rarity || 'Vật Phẩm',
+        badgeClass: 'bg-breezy-blue/20 text-breezy-blue border border-breezy-blue/40 font-semibold',
       };
   }
 }

@@ -499,20 +499,48 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           </div>
 
                           <div>
-                            <label className="block text-xs font-medium text-slate-300 mb-1">
-                              Độ hiếm (Rarity)
-                            </label>
-                            <select
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-xs font-medium text-slate-300">
+                                Độ hiếm / Nhãn phân loại (Tùy chỉnh tự do)
+                              </label>
+                              <span className="text-[11px] text-conan-gold">Tự do gõ chữ hoặc chọn mẫu</span>
+                            </div>
+                            <input
+                              type="text"
                               value={productForm.rarity}
-                              onChange={(e) => setProductForm({ ...productForm, rarity: e.target.value as ProductRarity })}
+                              onChange={(e) => setProductForm({ ...productForm, rarity: e.target.value })}
+                              placeholder="Ví dụ: SSR, UR, Bảo Bối Agasa, Limited Edition, Hot..."
                               className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/10 text-white text-sm focus:border-conan-gold focus:outline-none"
-                            >
-                              <option value="SSR">SSR (Siêu Hiếm)</option>
-                              <option value="UR">UR (Cực Hiếm - Vàng Kim)</option>
-                              <option value="DETECTIVE">DETECTIVE (Huy Hiệu Mori)</option>
-                              <option value="SR">SR (Hiếm)</option>
-                              <option value="R">R (Phổ Thông)</option>
-                            </select>
+                            />
+                            {/* Suggestion Chips */}
+                            <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                              <span className="text-[10px] text-slate-400">Gợi ý nhanh:</span>
+                              {[
+                                { key: 'SSR', label: 'SSR (Siêu Hiếm)' },
+                                { key: 'UR', label: 'UR (Cực Hiếm)' },
+                                { key: 'DETECTIVE', label: 'Bảo Bối Agasa' },
+                                { key: 'SR', label: 'SR (Hiếm)' },
+                                { key: 'R', label: 'R (Thường)' },
+                                { key: 'Limited', label: 'Limited' },
+                                { key: 'Bán Chạy', label: 'Bán Chạy' },
+                              ].map((chip) => (
+                                <button
+                                  key={chip.key}
+                                  type="button"
+                                  onClick={() => setProductForm({ ...productForm, rarity: chip.key })}
+                                  className={`px-2 py-0.5 rounded-lg text-[10px] font-medium transition-all ${
+                                    productForm.rarity === chip.key
+                                      ? 'bg-conan-gold text-slate-950 font-bold shadow-sm'
+                                      : 'bg-slate-900/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-white/10'
+                                  }`}
+                                >
+                                  {chip.label}
+                                </button>
+                              ))}
+                            </div>
+                            <p className="text-[10px] text-slate-400 mt-1">
+                              💡 Bạn có thể tự do nhập bất kỳ nội dung nào để cá nhân hoá thẻ sản phẩm (VD: Limited, Fandom Conan, Quà tặng...) hoặc bấm nút chọn nhanh phía trên.
+                            </p>
                           </div>
 
                           <div>

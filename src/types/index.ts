@@ -1,4 +1,4 @@
-export type ProductRarity = 'SSR' | 'UR' | 'SR' | 'R' | 'DETECTIVE';
+export type ProductRarity = 'SSR' | 'UR' | 'SR' | 'R' | 'DETECTIVE' | string;
 
 export interface Product {
   id: string;
