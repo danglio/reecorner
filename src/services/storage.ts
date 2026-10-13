@@ -130,6 +130,7 @@ export const INITIAL_SETTINGS: AppSettings = {
   zaloPhone: '0901234567',
   facebookUrl: 'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr',
   adminPin: '1412',
+  customTags: ['Bảo Bối Agasa', 'Bản Giới Hạn', 'Bán Chạy', 'Mới Nhất', 'SSR', 'UR'],
 };
 
 // 2. Formatters & Helpers
@@ -219,11 +220,15 @@ export function getOrderStatusInfo(status: OrderStatus): OrderStatusConfig {
   return ORDER_STATUS_MAP[status] || ORDER_STATUS_MAP.pending;
 }
 
-export function getRarityBadgeInfo(rarity: ProductRarity): {
+export function getRarityBadgeInfo(rarity?: ProductRarity): {
   label: string;
   badgeClass: string;
-} {
-  const normalized = (rarity || '').trim().toUpperCase();
+} | null {
+  if (!rarity || !rarity.trim()) {
+    return null;
+  }
+  const clean = rarity.trim();
+  const normalized = clean.toUpperCase();
   switch (normalized) {
     case 'SSR':
       return {
@@ -252,7 +257,7 @@ export function getRarityBadgeInfo(rarity: ProductRarity): {
       };
     default:
       return {
-        label: rarity || 'Vật Phẩm',
+        label: clean,
         badgeClass: 'bg-breezy-blue/20 text-breezy-blue border border-breezy-blue/40 font-semibold',
       };
   }
@@ -442,6 +447,7 @@ export function getSettings(): AppSettings {
       ...INITIAL_SETTINGS,
       ...cached,
       facebookUrl: cached.facebookUrl || INITIAL_SETTINGS.facebookUrl,
+      customTags: cached.customTags || INITIAL_SETTINGS.customTags,
     };
   }
   setStorageItem(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
@@ -452,7 +458,78 @@ export function saveSettings(settings: AppSettings): void {
   setStorageItem(STORAGE_KEYS.SETTINGS, settings);
 }
 
-// 7. Reset Storage helper (hữu ích cho Admin / Test)
+// 7. Custom Tags Management (Cho phép tùy chỉnh & xóa bỏ hoàn toàn các mục SSR, UR...)
+export function getCustomTags(): string[] {
+  const settings = getSettings();
+  if (settings.customTags && Array.isArray(settings.customTags)) {
+    return settings.customTags;
+  }
+  return ['Bảo Bối Agasa', 'Bản Giới Hạn', 'Bán Chạy', 'Mới Nhất', 'SSR', 'UR'];
+}
+
+export function saveCustomTags(tags: string[]): void {
+  const settings = getSettings();
+  settings.customTags = tags;
+  saveSettings(settings);
+}
+
+export function addCustomTag(newTag: string): string[] {
+  const clean = newTag.trim();
+  if (!clean) return getCustomTags();
+  const current = getCustomTags();
+  if (!current.some((t) => t.toLowerCase() === clean.toLowerCase())) {
+    const updated = [...current, clean];
+    saveCustomTags(updated);
+    return updated;
+  }
+  return current;
+}
+
+export function deleteCustomTag(tagToDelete: string, removeFromProducts: boolean = true): string[] {
+  const clean = tagToDelete.trim().toLowerCase();
+  const current = getCustomTags();
+  const updated = current.filter((t) => t.trim().toLowerCase() !== clean);
+  saveCustomTags(updated);
+
+  if (removeFromProducts) {
+    const products = getProducts();
+    let hasChanges = false;
+    const updatedProducts = products.map((p) => {
+      if (p.rarity && p.rarity.trim().toLowerCase() === clean) {
+        hasChanges = true;
+        return { ...p, rarity: '' };
+      }
+      return p;
+    });
+    if (hasChanges) {
+      setStorageItem(STORAGE_KEYS.PRODUCTS, updatedProducts);
+    }
+  }
+  return updated;
+}
+
+export function clearAllSsrRarityTags(): string[] {
+  const gameTags = ['SSR', 'UR', 'DETECTIVE', 'SR', 'R'];
+  const current = getCustomTags();
+  const updated = current.filter((t) => !gameTags.includes(t.trim().toUpperCase()));
+  saveCustomTags(updated);
+
+  const products = getProducts();
+  let hasChanges = false;
+  const updatedProducts = products.map((p) => {
+    if (p.rarity && gameTags.includes(p.rarity.trim().toUpperCase())) {
+      hasChanges = true;
+      return { ...p, rarity: '' };
+    }
+    return p;
+  });
+  if (hasChanges) {
+    setStorageItem(STORAGE_KEYS.PRODUCTS, updatedProducts);
+  }
+  return updated;
+}
+
+// 8. Reset Storage helper (hữu ích cho Admin / Test)
 export function resetStorage(): void {
   setStorageItem(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
   setStorageItem(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);

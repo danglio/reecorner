@@ -37,7 +37,11 @@ import {
   resetStorage,
   formatVND,
   ORDER_STATUS_MAP,
-  getRarityBadgeInfo
+  getRarityBadgeInfo,
+  getCustomTags,
+  addCustomTag,
+  deleteCustomTag,
+  clearAllSsrRarityTags
 } from '../services/storage';
 
 export interface AdminPanelProps {
@@ -63,6 +67,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [products, setProducts] = useState<Product[]>([]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isAddingProduct, setIsAddingProduct] = useState<boolean>(false);
+  const [customTags, setCustomTags] = useState<string[]>([]);
+  const [newTagInput, setNewTagInput] = useState<string>('');
+
   const [productForm, setProductForm] = useState<{
     name: string;
     rarity: ProductRarity;
@@ -73,7 +80,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     inStock: boolean;
   }>({
     name: '',
-    rarity: 'SSR',
+    rarity: '',
     price: 150000,
     originalPrice: 200000,
     description: '',
@@ -111,6 +118,50 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setProducts(getProducts());
     setOrders(getOrders());
     setSettings(getSettings());
+    setCustomTags(getCustomTags());
+  };
+
+  const handleAddCustomTag = () => {
+    const clean = newTagInput.trim();
+    if (!clean) return;
+    const updated = addCustomTag(clean);
+    setCustomTags(updated);
+    setProductForm((prev) => ({ ...prev, rarity: clean }));
+    setNewTagInput('');
+    onDataChanged?.();
+  };
+
+  const handleDeleteTag = (tagToDelete: string) => {
+    if (
+      confirm(
+        `Bạn có chắc chắn muốn xóa vĩnh viễn mục "${tagToDelete}" khỏi danh sách nhãn và gỡ khỏi các sản phẩm không?`
+      )
+    ) {
+      const updated = deleteCustomTag(tagToDelete);
+      setCustomTags(updated);
+      setProducts(getProducts());
+      if (productForm.rarity?.trim().toLowerCase() === tagToDelete.trim().toLowerCase()) {
+        setProductForm((prev) => ({ ...prev, rarity: '' }));
+      }
+      onDataChanged?.();
+    }
+  };
+
+  const handleClearAllSsrTags = () => {
+    if (
+      confirm(
+        'Bạn có chắc chắn muốn XÓA HOÀN TOÀN các mục SSR, UR, DETECTIVE, SR, R khỏi danh sách nhãn và gỡ khỏi tất cả sản phẩm không?'
+      )
+    ) {
+      const updated = clearAllSsrRarityTags();
+      setCustomTags(updated);
+      setProducts(getProducts());
+      const gameTags = ['SSR', 'UR', 'DETECTIVE', 'SR', 'R'];
+      if (gameTags.includes(productForm.rarity?.trim().toUpperCase() || '')) {
+        setProductForm((prev) => ({ ...prev, rarity: '' }));
+      }
+      onDataChanged?.();
+    }
   };
 
   // Handle PIN Authentication
@@ -193,7 +244,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setEditingProduct(product);
     setProductForm({
       name: product.name,
-      rarity: product.rarity,
+      rarity: product.rarity || '',
       price: product.price,
       originalPrice: product.originalPrice || product.price,
       description: product.description,
@@ -446,7 +497,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         setEditingProduct(null);
                         setProductForm({
                           name: '',
-                          rarity: 'SSR',
+                          rarity: '',
                           price: 150000,
                           originalPrice: 200000,
                           description: '',
@@ -501,45 +552,125 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <div>
                             <div className="flex items-center justify-between mb-1">
                               <label className="block text-xs font-medium text-slate-300">
-                                Độ hiếm / Nhãn phân loại (Tùy chỉnh tự do)
+                                Độ hiếm / Nhãn phân loại (Tùy chọn)
                               </label>
-                              <span className="text-[11px] text-conan-gold">Tự do gõ chữ hoặc chọn mẫu</span>
-                            </div>
-                            <input
-                              type="text"
-                              value={productForm.rarity}
-                              onChange={(e) => setProductForm({ ...productForm, rarity: e.target.value })}
-                              placeholder="Ví dụ: SSR, UR, Bảo Bối Agasa, Limited Edition, Hot..."
-                              className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/10 text-white text-sm focus:border-conan-gold focus:outline-none"
-                            />
-                            {/* Suggestion Chips */}
-                            <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                              <span className="text-[10px] text-slate-400">Gợi ý nhanh:</span>
-                              {[
-                                { key: 'SSR', label: 'SSR (Siêu Hiếm)' },
-                                { key: 'UR', label: 'UR (Cực Hiếm)' },
-                                { key: 'DETECTIVE', label: 'Bảo Bối Agasa' },
-                                { key: 'SR', label: 'SR (Hiếm)' },
-                                { key: 'R', label: 'R (Thường)' },
-                                { key: 'Limited', label: 'Limited' },
-                                { key: 'Bán Chạy', label: 'Bán Chạy' },
-                              ].map((chip) => (
+                              {productForm.rarity && (
                                 <button
-                                  key={chip.key}
                                   type="button"
-                                  onClick={() => setProductForm({ ...productForm, rarity: chip.key })}
-                                  className={`px-2 py-0.5 rounded-lg text-[10px] font-medium transition-all ${
-                                    productForm.rarity === chip.key
-                                      ? 'bg-conan-gold text-slate-950 font-bold shadow-sm'
-                                      : 'bg-slate-900/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-white/10'
-                                  }`}
+                                  onClick={() => setProductForm({ ...productForm, rarity: '' })}
+                                  className="text-[11px] text-red-400 hover:text-red-300 flex items-center gap-1 cursor-pointer font-medium"
                                 >
-                                  {chip.label}
+                                  <Trash2 className="w-3 h-3" />
+                                  Xóa nhãn sản phẩm này (để trống)
                                 </button>
-                              ))}
+                              )}
                             </div>
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={productForm.rarity || ''}
+                                onChange={(e) => setProductForm({ ...productForm, rarity: e.target.value })}
+                                placeholder="Để trống nếu không muốn dùng nhãn, hoặc tự gõ nhãn tùy ý..."
+                                className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-white/10 text-white text-sm focus:border-conan-gold focus:outline-none"
+                              />
+                              {productForm.rarity && (
+                                <button
+                                  type="button"
+                                  onClick={() => setProductForm({ ...productForm, rarity: '' })}
+                                  className="px-3 py-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white border border-white/10 text-xs cursor-pointer"
+                                  title="Xóa trắng nhãn này"
+                                >
+                                  Xóa nhãn
+                                </button>
+                              )}
+                            </div>
+
+                            {/* Tag Management & Selection */}
+                            <div className="mt-2.5 p-3 rounded-xl bg-slate-900/80 border border-white/5 space-y-2.5">
+                              <div className="flex flex-wrap items-center justify-between gap-1">
+                                <span className="text-[11px] font-semibold text-slate-300">
+                                  Danh sách nhãn mẫu (Bấm để chọn, bấm × để xóa luôn khỏi hệ thống):
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={handleClearAllSsrTags}
+                                  className="text-[10px] text-amber-400 hover:text-amber-300 underline font-medium cursor-pointer"
+                                  title="Xóa vĩnh viễn SSR, UR, DETECTIVE, SR, R khỏi danh sách nhãn và toàn bộ sản phẩm"
+                                >
+                                  🗑️ Xóa hết các mục SSR/UR/SR
+                                </button>
+                              </div>
+
+                              {/* Chips with delete button */}
+                              <div className="flex flex-wrap items-center gap-1.5">
+                                {customTags.length === 0 ? (
+                                  <span className="text-[11px] text-slate-500 italic">
+                                    Đã xóa hết nhãn mẫu (Sản phẩm không bắt buộc phải có nhãn).
+                                  </span>
+                                ) : (
+                                  customTags.map((tag) => {
+                                    const isSelected =
+                                      productForm.rarity?.trim().toLowerCase() === tag.trim().toLowerCase();
+                                    return (
+                                      <div
+                                        key={tag}
+                                        className={`inline-flex items-center gap-1 pl-2.5 pr-1 py-1 rounded-lg text-[11px] font-medium border transition-all ${
+                                          isSelected
+                                            ? 'bg-conan-gold text-slate-950 font-bold border-conan-gold shadow-sm'
+                                            : 'bg-slate-800 text-slate-300 border-white/10 hover:border-white/20'
+                                        }`}
+                                      >
+                                        <button
+                                          type="button"
+                                          onClick={() => setProductForm({ ...productForm, rarity: tag })}
+                                          className="cursor-pointer"
+                                        >
+                                          {tag}
+                                        </button>
+                                        <button
+                                          type="button"
+                                          title={`Xóa vĩnh viễn mục "${tag}"`}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDeleteTag(tag);
+                                          }}
+                                          className="w-4 h-4 rounded-full flex items-center justify-center text-slate-400 hover:text-red-400 hover:bg-red-500/20 ml-0.5 cursor-pointer transition-colors"
+                                        >
+                                          <X className="w-3 h-3" />
+                                        </button>
+                                      </div>
+                                    );
+                                  })
+                                )}
+                              </div>
+
+                              {/* Add new tag inline */}
+                              <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+                                <input
+                                  type="text"
+                                  value={newTagInput}
+                                  onChange={(e) => setNewTagInput(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      handleAddCustomTag();
+                                    }
+                                  }}
+                                  placeholder="Thêm nhãn mới (VD: Limited, Sưu tầm, Manga...)"
+                                  className="flex-1 px-2.5 py-1.5 rounded-lg bg-slate-950 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-conan-gold"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={handleAddCustomTag}
+                                  className="px-3 py-1.5 rounded-lg bg-conan-gold/20 text-conan-gold hover:bg-conan-gold hover:text-slate-950 font-bold text-xs border border-conan-gold/40 transition-all cursor-pointer whitespace-nowrap"
+                                >
+                                  + Thêm nhãn
+                                </button>
+                              </div>
+                            </div>
+
                             <p className="text-[10px] text-slate-400 mt-1">
-                              💡 Bạn có thể tự do nhập bất kỳ nội dung nào để cá nhân hoá thẻ sản phẩm (VD: Limited, Fandom Conan, Quà tặng...) hoặc bấm nút chọn nhanh phía trên.
+                              💡 Bạn có thể để trống nếu không muốn hiển thị nhãn, tự do gõ nhãn mới, hoặc bấm dấu × để xóa vĩnh viễn các mục như SSR/UR.
                             </p>
                           </div>
 
@@ -706,9 +837,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                 {p.name}
                               </td>
                               <td className="py-3 px-4">
-                                <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border ${badge.badgeClass}`}>
-                                  {badge.label}
-                                </span>
+                                {badge ? (
+                                  <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border ${badge.badgeClass}`}>
+                                    {badge.label}
+                                  </span>
+                                ) : (
+                                  <span className="text-[10px] text-slate-500 italic">Không nhãn</span>
+                                )}
                               </td>
                               <td className="py-3 px-4">
                                 <div className="flex items-center gap-1.5">

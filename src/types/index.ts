@@ -1,11 +1,11 @@
-export type ProductRarity = 'SSR' | 'UR' | 'SR' | 'R' | 'DETECTIVE' | string;
+export type ProductRarity = string;
 
 export interface Product {
   id: string;
   name: string;
   price: number; // Đơn giá theo VNĐ
   originalPrice?: number; // Giá gốc hiển thị gạch ngang (nếu có)
-  rarity: ProductRarity;
+  rarity?: ProductRarity; // Nhãn / độ hiếm tùy chọn (có thể để trống hoặc xóa)
   image: string; // URL hoặc data URI Base64
   description: string;
   inStock: boolean;
@@ -48,6 +48,7 @@ export interface AppSettings {
   zaloPhone: string; // Số điện thoại nhận đơn Zalo (mặc định '0901234567')
   facebookUrl: string; // Đường dẫn Facebook người bán (mặc định 'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr')
   adminPin: string; // Mã PIN truy cập trang quản trị bí mật (mặc định '1412')
+  customTags?: string[]; // Danh sách nhãn/độ hiếm tùy chỉnh, cho phép thêm và xóa hoàn toàn
 }
 
 export interface OrderStatusConfig {

@@ -22,14 +22,6 @@ export interface ShopCatalogProps {
 
 type RarityFilter = 'ALL' | ProductRarity;
 
-const BASE_RARITY_TABS: { id: RarityFilter; label: string }[] = [
-  { id: 'ALL', label: 'Tất cả bảo bối' },
-  { id: 'SSR', label: 'SSR Cực Hiếm' },
-  { id: 'UR', label: 'UR Huyền Thoại' },
-  { id: 'DETECTIVE', label: 'Bảo Bối Agasa' },
-  { id: 'SR', label: 'SR Hiếm' },
-];
-
 export const ShopCatalog: React.FC<ShopCatalogProps> = ({
   onAddToCart,
   onBuyNow,
@@ -49,30 +41,44 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
     }
   }, [initialProducts]);
 
-  // Dynamic tabs: Base tabs + any custom rarities found in products
+  // Dynamic tabs: Chỉ hiển thị các tab danh mục thực tế đang có trên sản phẩm (cho phép xóa bỏ hoàn toàn SSR/UR)
   const rarityTabs = useMemo(() => {
-    const baseIds = new Set(BASE_RARITY_TABS.map((t) => t.id.toUpperCase()));
-    const customRarities = Array.from(new Set(products.map((p) => p.rarity))).filter(
-      (r) => r && !baseIds.has(r.toUpperCase())
+    const tabs: { id: RarityFilter; label: string }[] = [
+      { id: 'ALL', label: 'Tất cả bảo bối' },
+    ];
+
+    const activeRarities = Array.from(
+      new Set(
+        products
+          .map((p) => p.rarity?.trim())
+          .filter((r): r is string => Boolean(r && r.length > 0))
+      )
     );
-    const customTabs = customRarities.map((r) => ({
-      id: r as RarityFilter,
-      label: r,
-    }));
-    return [...BASE_RARITY_TABS, ...customTabs];
+
+    activeRarities.forEach((r) => {
+      const badgeInfo = getRarityBadgeInfo(r);
+      tabs.push({
+        id: r as RarityFilter,
+        label: badgeInfo ? badgeInfo.label : r,
+      });
+    });
+
+    return tabs;
   }, [products]);
 
   // Filter products by rarity and search query
   const filteredProducts = useMemo(() => {
     return products.filter((prod) => {
       const matchRarity =
-        selectedRarity === 'ALL' ? true : prod.rarity === selectedRarity;
+        selectedRarity === 'ALL'
+          ? true
+          : (prod.rarity || '').trim().toLowerCase() === selectedRarity.trim().toLowerCase();
       const q = searchQuery.trim().toLowerCase();
       const matchSearch =
         !q ||
         prod.name.toLowerCase().includes(q) ||
         prod.description.toLowerCase().includes(q) ||
-        prod.rarity.toLowerCase().includes(q);
+        Boolean(prod.rarity && prod.rarity.toLowerCase().includes(q));
       return matchRarity && matchSearch;
     });
   }, [products, selectedRarity, searchQuery]);
@@ -289,11 +295,15 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
 
                   {/* Top Badges */}
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-                    <span
-                      className={`px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wider uppercase backdrop-blur-md shadow-md ${rarityInfo.badgeClass}`}
-                    >
-                      {rarityInfo.label}
-                    </span>
+                    {rarityInfo ? (
+                      <span
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wider uppercase backdrop-blur-md shadow-md ${rarityInfo.badgeClass}`}
+                      >
+                        {rarityInfo.label}
+                      </span>
+                    ) : (
+                      <span />
+                    )}
 
                     {discountPercent > 0 && (
                       <span className="flex items-center space-x-1 px-2 py-0.5 rounded-md bg-conan-red text-white text-[10px] font-extrabold shadow-md">
@@ -334,8 +344,12 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                     </h3>
                     {/* 2. Subtitle: Rarity & BreeCorner */}
                     <p className="text-xs font-semibold text-breezy-blue flex items-center gap-1.5">
-                      <span className="text-cream-sun font-bold">{rarityInfo.label}</span>
-                      <span className="text-white/40">•</span>
+                      {rarityInfo && (
+                        <>
+                          <span className="text-cream-sun font-bold">{rarityInfo.label}</span>
+                          <span className="text-white/40">•</span>
+                        </>
+                      )}
                       <span className="text-breezy-blue font-bold">BreeCorner Sưu Tầm</span>
                     </p>
                     <p className="text-xs text-slate-300/80 line-clamp-2 leading-relaxed pt-0.5">
@@ -392,7 +406,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
 
                     {/* 5. Category Pill with Matcha Tea */}
                     <div className="w-full py-1.5 px-3 rounded-full bg-[#838F58] text-white text-xs font-bold text-center shadow-sm flex items-center justify-center gap-1.5">
-                      <span>{rarityInfo.label} • Matcha Tea</span>
+                      <span>{rarityInfo ? `${rarityInfo.label} • Matcha Tea` : 'BreeCorner • Sưu Tầm'}</span>
                     </div>
                   </div>
                 </div>
