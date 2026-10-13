@@ -4,7 +4,12 @@
 
 @layer base {
   body {
-    @apply bg-[#051F45] text-slate-100 font-sans min-h-screen overflow-x-hidden;
+    background: radial-gradient(circle at 90% 10%, rgba(190, 217, 244, 0.28) 0%, transparent 45%),
+                radial-gradient(circle at 10% 90%, rgba(255, 244, 200, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 50% 60%, rgba(131, 143, 88, 0.16) 0%, transparent 50%),
+                linear-gradient(180deg, #051F45 0%, #07234D 50%, #0C3166 100%);
+    background-attachment: fixed;
+    @apply text-slate-100 font-sans min-h-screen overflow-x-hidden;
   }
 }
 

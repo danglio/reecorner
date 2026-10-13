@@ -124,7 +124,7 @@ export const App: React.FC = () => {
   const settings = getSettings();
 
   return (
-    <div className="min-h-screen bg-navy-night text-slate-100 flex flex-col relative selection:bg-breezy-blue selection:text-navy-night">
+    <div className="min-h-screen bg-transparent text-slate-100 flex flex-col relative selection:bg-breezy-blue selection:text-navy-night">
       {/* Background ambient lighting effects BreeCorner */}
       <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-breezy-blue/20 rounded-full blur-[120px] pointer-events-none -z-10" />
       <div className="fixed bottom-1/4 right-1/4 w-[400px] h-[400px] bg-matcha-tea/15 rounded-full blur-[100px] pointer-events-none -z-10" />
