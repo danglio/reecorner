@@ -17,7 +17,16 @@ import {
   Layers,
   Save,
   LogOut,
-  Tag
+  Tag,
+  GitBranch,
+  GitCommit,
+  Download,
+  Copy,
+  Terminal,
+  FileCode,
+  ExternalLink,
+  Check,
+  Sparkles
 } from 'lucide-react';
 import {
   Product,
@@ -41,7 +50,16 @@ import {
   getCustomTags,
   addCustomTag,
   deleteCustomTag,
-  clearAllSsrRarityTags
+  clearAllSsrRarityTags,
+  checkSyncStatus,
+  syncToSourceCode,
+  exportStoreDataJSON,
+  exportStoreDataTypeScript,
+  importStoreDataJSON,
+  syncToGitHubRepo,
+  checkAndUpdateFromSource,
+  SyncStatus,
+  STORAGE_KEYS
 } from '../services/storage';
 
 export interface AdminPanelProps {
@@ -61,7 +79,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [pinError, setPinError] = useState<string>('');
 
   // Tab state
-  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'settings'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'orders' | 'settings' | 'source_sync'>('products');
 
   // Products state
   const [products, setProducts] = useState<Product[]>([]);
@@ -104,13 +122,52 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [confirmPin, setConfirmPin] = useState<string>('');
   const [settingsMessage, setSettingsMessage] = useState<string>('');
 
-  // File input ref for image upload
+  // Source & Git Sync state
+  const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(null);
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const [syncFeedback, setSyncFeedback] = useState<{
+    type: 'success' | 'error' | '';
+    message: string;
+    timestamp?: string;
+  }>({ type: '', message: '' });
+  const [isAutoSync, setIsAutoSync] = useState<boolean>(() => {
+    return localStorage.getItem(STORAGE_KEYS.AUTO_SYNC) !== 'false';
+  });
+  const [copiedCode, setCopiedCode] = useState<boolean>(false);
+
+  // GitHub Remote API Sync state
+  const [githubToken, setGithubToken] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.GITHUB_CONFIG);
+      return saved ? JSON.parse(saved).token || '' : '';
+    } catch {
+      return '';
+    }
+  });
+  const [githubRepo, setGithubRepo] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.GITHUB_CONFIG);
+      return saved ? JSON.parse(saved).repo || 'danglio/conan-order-tracker' : 'danglio/conan-order-tracker';
+    } catch {
+      return 'danglio/conan-order-tracker';
+    }
+  });
+  const [githubBranch, setGithubBranch] = useState<string>('main');
+  const [isGitHubSyncing, setIsGitHubSyncing] = useState<boolean>(false);
+  const [githubMessage, setGithubMessage] = useState<{ type: 'success' | 'error' | ''; text: string }>({
+    type: '',
+    text: ''
+  });
+
+  // File input refs
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputJsonRef = useRef<HTMLInputElement>(null);
 
   // Load data when opened
   useEffect(() => {
     if (isOpen) {
       loadAllData();
+      checkSyncStatus().then(setSyncStatus);
     }
   }, [isOpen]);
 
@@ -173,6 +230,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       setPinError('');
       setPinInput('');
       loadAllData();
+      checkSyncStatus().then(setSyncStatus);
     } else {
       setPinError('Mã số bí mật không chính xác! (Gợi ý mặc định: 1412)');
     }
@@ -184,7 +242,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setPinError('');
   };
 
-  // Image upload handler (converts file to Base64 with automatic lightweight canvas compression)
+  // Image upload handler
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -249,7 +307,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       return;
     }
 
-    const imageToSave = productForm.image.trim() || 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80';
+    const imageToSave =
+      productForm.image.trim() ||
+      'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80';
 
     const productData: Product = {
       id: editingProduct ? editingProduct.id : `prod_${Date.now()}`,
@@ -268,7 +328,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setIsAddingProduct(false);
     setEditingProduct(null);
     onDataChanged?.();
-    alert(editingProduct ? 'Cập nhật sản phẩm thành công!' : 'Thêm sản phẩm mới thành công!');
+    alert(
+      editingProduct
+        ? 'Cập nhật sản phẩm thành công! (Dữ liệu đã tự động đồng bộ vào mã nguồn nếu chạy local dev)'
+        : 'Thêm sản phẩm mới thành công! (Dữ liệu đã tự động đồng bộ vào mã nguồn nếu chạy local dev)'
+    );
   };
 
   // Start editing a product
@@ -338,25 +402,156 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     const updated: AppSettings = {
       zaloPhone: settings.zaloPhone.trim(),
       facebookUrl: settings.facebookUrl.trim() || 'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr',
-      adminPin: finalPin
+      adminPin: finalPin,
+      customTags: getCustomTags()
     };
 
     saveSettings(updated);
     setSettings(updated);
     setNewPin('');
     setConfirmPin('');
-    setSettingsMessage('Đã lưu cấu hình thành công!');
-    setTimeout(() => setSettingsMessage(''), 3000);
+    setSettingsMessage('Đã lưu cấu hình thành công! (Tự động đồng bộ vào mã nguồn)');
+    setTimeout(() => setSettingsMessage(''), 3500);
     onDataChanged?.();
   };
 
   // Reset to default mock data
   const handleResetData = () => {
-    if (confirm('Khôi phục toàn bộ dữ liệu mẫu (sản phẩm, đơn hàng, cài đặt gốc)?')) {
+    if (confirm('Khôi phục toàn bộ dữ liệu mẫu (sản phẩm, đơn hàng, cài đặt gốc từ mã nguồn)?')) {
       resetStorage();
       loadAllData();
       onDataChanged?.();
       alert('Đã khôi phục dữ liệu ban đầu!');
+    }
+  };
+
+  // Source Sync Action
+  const handleSyncToSource = async () => {
+    setIsSyncing(true);
+    setSyncFeedback({ type: '', message: '' });
+    try {
+      const result = await syncToSourceCode();
+      if (result.success) {
+        setSyncFeedback({
+          type: 'success',
+          message: `${result.message} ${result.gitCommitted ? '(Đã tạo Git Commit)' : ''} ${result.gitPushed ? '(Đã Git Push)' : ''}`,
+          timestamp: new Date().toLocaleTimeString('vi-VN')
+        });
+        checkSyncStatus().then(setSyncStatus);
+      } else {
+        setSyncFeedback({
+          type: 'error',
+          message: result.message
+        });
+      }
+    } catch (err: any) {
+      setSyncFeedback({
+        type: 'error',
+        message: `Lỗi kết nối: ${err?.message || 'Không xác định'}`
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  // Reload from source code
+  const handleReloadFromSource = () => {
+    if (confirm('Tải lại toàn bộ dữ liệu mới nhất từ file mã nguồn (storeData.json)? Những thay đổi chưa lưu trên máy bạn sẽ bị ghi đè.')) {
+      checkAndUpdateFromSource(true);
+      loadAllData();
+      onDataChanged?.();
+      alert('Đã nạp lại dữ liệu từ file mã nguồn storeData.json thành công!');
+    }
+  };
+
+  // Download JSON file
+  const handleDownloadJSON = () => {
+    const jsonStr = exportStoreDataJSON();
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `storeData-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Copy TypeScript code
+  const handleCopyTS = () => {
+    const tsCode = exportStoreDataTypeScript();
+    navigator.clipboard.writeText(tsCode).then(() => {
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2500);
+    });
+  };
+
+  // Import JSON file handler
+  const handleImportJSONFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const content = reader.result;
+      if (typeof content !== 'string') return;
+      const res = importStoreDataJSON(content);
+      if (res.success) {
+        loadAllData();
+        onDataChanged?.();
+        alert(res.message);
+      } else {
+        alert(res.message);
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  };
+
+  // Toggle Auto-sync
+  const handleToggleAutoSync = (enabled: boolean) => {
+    setIsAutoSync(enabled);
+    localStorage.setItem(STORAGE_KEYS.AUTO_SYNC, enabled ? 'true' : 'false');
+  };
+
+  // Remote GitHub API sync
+  const handleGitHubSync = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!githubToken.trim()) {
+      alert('Vui lòng nhập GitHub Personal Access Token.');
+      return;
+    }
+    if (!githubRepo.trim()) {
+      alert('Vui lòng nhập tên GitHub Repository (dạng username/repo).');
+      return;
+    }
+
+    setIsGitHubSyncing(true);
+    setGithubMessage({ type: '', text: '' });
+
+    try {
+      // Save config for convenience
+      localStorage.setItem(
+        STORAGE_KEYS.GITHUB_CONFIG,
+        JSON.stringify({ token: githubToken.trim(), repo: githubRepo.trim() })
+      );
+
+      const res = await syncToGitHubRepo({
+        token: githubToken.trim(),
+        repo: githubRepo.trim(),
+        branch: githubBranch.trim() || 'main'
+      });
+
+      if (res.success) {
+        setGithubMessage({ type: 'success', text: res.message });
+      } else {
+        setGithubMessage({ type: 'error', text: res.message });
+      }
+    } catch (err: any) {
+      setGithubMessage({ type: 'error', text: err?.message || 'Lỗi không xác định khi kết nối GitHub API' });
+    } finally {
+      setIsGitHubSyncing(false);
     }
   };
 
@@ -377,9 +572,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <span className="text-xs px-2 py-0.5 rounded-full bg-conan-red/30 text-conan-red border border-conan-red/40 font-mono">
                   #1412
                 </span>
+                {syncStatus?.isLocalDev && (
+                  <span className="hidden sm:inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Mã Nguồn Đã Kết Nối
+                  </span>
+                )}
               </h2>
               <p className="text-xs text-slate-400">
-                BreeCorner x Conan Shop • Hệ thống quản lý vật phẩm & đơn hàng
+                BreeCorner x Conan Shop • Hệ thống quản lý vật phẩm & đồng bộ mã nguồn mở
               </p>
             </div>
           </div>
@@ -419,7 +620,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               XÁC THỰC MẬT MÃ QUẢN TRỊ
             </h3>
             <p className="text-sm text-slate-400 text-center max-w-md mb-6">
-              Vui lòng nhập mã số bí mật để truy cập bảng điều khiển quản lý shop và đơn hàng.
+              Vui lòng nhập mã số bí mật để truy cập bảng điều khiển quản lý shop, đơn hàng và đồng bộ mã nguồn.
             </p>
 
             <form onSubmit={handlePinSubmit} className="w-full max-w-sm space-y-4">
@@ -473,7 +674,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('products')}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-semibold transition-all border-b-2 ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-semibold transition-all border-b-2 whitespace-nowrap ${
                   activeTab === 'products'
                     ? 'border-conan-gold text-conan-gold bg-slate-900/90'
                     : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -486,7 +687,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('orders')}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-semibold transition-all border-b-2 ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-semibold transition-all border-b-2 whitespace-nowrap ${
                   activeTab === 'orders'
                     ? 'border-conan-gold text-conan-gold bg-slate-900/90'
                     : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -499,14 +700,30 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveTab('settings')}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-semibold transition-all border-b-2 ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-semibold transition-all border-b-2 whitespace-nowrap ${
                   activeTab === 'settings'
                     ? 'border-conan-gold text-conan-gold bg-slate-900/90'
                     : 'border-transparent text-slate-400 hover:text-slate-200'
                 }`}
               >
                 <Phone className="w-4 h-4" />
-                Cài Đặt Facebook, Zalo & PIN
+                Cài Đặt Facebook & Zalo
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('source_sync')}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-semibold transition-all border-b-2 whitespace-nowrap ${
+                  activeTab === 'source_sync'
+                    ? 'border-breezy-blue text-breezy-blue bg-slate-900/90 font-bold'
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <GitBranch className="w-4 h-4 text-breezy-blue" />
+                <span>Mã Nguồn Mở & Git</span>
+                {syncStatus?.isLocalDev && (
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                )}
               </button>
             </div>
 
@@ -518,7 +735,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   {/* Action row */}
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <h3 className="text-base font-bold text-white">Danh mục Thẻ bài & Vật phẩm</h3>
+                      <h3 className="text-base font-bold text-white flex items-center gap-2">
+                        Danh mục Thẻ bài & Vật phẩm
+                        {syncStatus?.isLocalDev && (
+                          <span className="text-[10px] text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full font-normal">
+                            ✓ Tự động ghi vào mã nguồn
+                          </span>
+                        )}
+                      </h3>
                       <p className="text-xs text-slate-400">
                         Cho phép thêm ảnh mới từ máy tính, điều chỉnh giá tiền và thông tin vật phẩm
                       </p>
@@ -778,7 +1002,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   alt="Preview"
                                   className="w-full h-full object-cover"
                                   onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80';
+                                    (e.target as HTMLImageElement).src =
+                                      'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80';
                                   }}
                                 />
                               </div>
@@ -860,7 +1085,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                     alt={p.name}
                                     className="w-full h-full object-cover"
                                     onError={(e) => {
-                                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80';
+                                      (e.target as HTMLImageElement).src =
+                                        'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80';
                                     }}
                                   />
                                 </div>
@@ -870,7 +1096,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                               </td>
                               <td className="py-3 px-4">
                                 {badge ? (
-                                  <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border ${badge.badgeClass}`}>
+                                  <span
+                                    className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border ${badge.badgeClass}`}
+                                  >
                                     {badge.label}
                                   </span>
                                 ) : (
@@ -891,9 +1119,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                 </div>
                               </td>
                               <td className="py-3 px-4">
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                                  p.inStock ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'
-                                }`}>
+                                <span
+                                  className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                                    p.inStock
+                                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                      : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                                  }`}
+                                >
                                   {p.inStock ? 'Còn hàng' : 'Hết hàng'}
                                 </span>
                               </td>
@@ -1042,7 +1274,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                 {formatVND(o.total)}
                               </td>
                               <td className="py-3 px-4">
-                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border ${statusInfo.badgeBg}`}>
+                                <span
+                                  className={`px-2.5 py-1 rounded-full text-[10px] font-semibold border ${statusInfo.badgeBg}`}
+                                >
                                   {statusInfo.label}
                                 </span>
                               </td>
@@ -1085,7 +1319,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     </div>
                   )}
 
-                  <form onSubmit={handleSaveSettings} className="space-y-5 bg-slate-950/40 p-5 rounded-2xl border border-white/10">
+                  <form
+                    onSubmit={handleSaveSettings}
+                    className="space-y-5 bg-slate-950/40 p-5 rounded-2xl border border-white/10"
+                  >
                     <div>
                       <label className="block text-xs font-medium text-slate-300 mb-1.5 flex items-center gap-2">
                         <Tag className="w-4 h-4 text-bree-baby" />
@@ -1164,6 +1401,275 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       </button>
                     </div>
                   </form>
+                </div>
+              )}
+
+              {/* TAB 4: SOURCE CODE & GIT REPOSITORY SYNC */}
+              {activeTab === 'source_sync' && (
+                <div className="max-w-2xl mx-auto space-y-6">
+                  {/* Top explanation */}
+                  <div>
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <GitBranch className="w-5 h-5 text-breezy-blue" />
+                      TRUNG TÂM ĐỒNG BỘ MÃ NGUỒN MỞ & GIT
+                    </h3>
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                      Khắc phục triệt để tình trạng: <em>"Chỉnh sửa trên admin chỉ lưu tạm vào trình duyệt và không đẩy lên mã nguồn"</em>. Tính năng này cho phép ghi dữ liệu thẳng vào file mã nguồn mở <span className="font-mono text-conan-gold">src/data/storeData.json</span> và tạo Git commit tự động!
+                    </p>
+                  </div>
+
+                  {/* SECTION 1: Local Dev Server Status & One-Click Sync */}
+                  <div className="p-5 rounded-2xl bg-slate-950/60 border border-white/10 space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className={`w-3 h-3 rounded-full ${
+                            syncStatus?.isLocalDev ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+                          }`}
+                        />
+                        <div>
+                          <h4 className="text-sm font-bold text-white">
+                            {syncStatus?.isLocalDev
+                              ? '🟢 Máy chủ Local Dev đang kết nối trực tiếp với Mã nguồn'
+                              : '🟡 Đang chạy trên Hosting Tĩnh (Vercel / Cloud)'}
+                          </h4>
+                          <p className="text-[11px] text-slate-400 font-mono">
+                            Tệp đích: src/data/storeData.json {syncStatus?.gitBranch ? `• Nhánh Git: [${syncStatus.gitBranch}]` : ''}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => checkSyncStatus().then(setSyncStatus)}
+                        className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white"
+                        title="Kiểm tra lại kết nối"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {syncStatus?.lastCommit && (
+                      <div className="p-2.5 rounded-xl bg-slate-900/80 border border-white/5 flex items-center gap-2 text-xs text-slate-300">
+                        <GitCommit className="w-4 h-4 text-conan-gold shrink-0" />
+                        <span className="text-slate-400">Commit gần nhất:</span>
+                        <span className="font-mono text-[11px] text-white truncate">{syncStatus.lastCommit}</span>
+                      </div>
+                    )}
+
+                    {/* Feedback message */}
+                    {syncFeedback.message && (
+                      <div
+                        className={`p-3 rounded-xl border text-xs flex items-start gap-2 ${
+                          syncFeedback.type === 'success'
+                            ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                            : 'bg-red-500/15 border-red-500/40 text-red-300'
+                        }`}
+                      >
+                        {syncFeedback.type === 'success' ? (
+                          <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-400" />
+                        ) : (
+                          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
+                        )}
+                        <div className="flex-1">
+                          <p className="font-medium">{syncFeedback.message}</p>
+                          {syncFeedback.timestamp && (
+                            <p className="text-[10px] opacity-75 mt-0.5">Lúc: {syncFeedback.timestamp}</p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Main action buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3 pt-1">
+                      <button
+                        type="button"
+                        disabled={isSyncing}
+                        onClick={handleSyncToSource}
+                        className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-breezy-blue to-blue-600 hover:from-blue-600 hover:to-breezy-blue text-slate-950 font-bold text-sm shadow-lg shadow-breezy-blue/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                      >
+                        <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                        <span>
+                          {isSyncing ? 'Đang ghi vào mã nguồn...' : '⚡ GHI ĐÈ VÀO MÃ NGUỒN & GIT COMMIT NGAY'}
+                        </span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleReloadFromSource}
+                        className="py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 text-xs font-semibold border border-white/10 transition-colors flex items-center justify-center gap-1.5"
+                        title="Nạp lại dữ liệu từ file mã nguồn ban đầu"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        <span>Nạp lại từ Code nguồn</span>
+                      </button>
+                    </div>
+
+                    {/* Auto-sync switch */}
+                    <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+                      <input
+                        type="checkbox"
+                        id="autoSyncCheck"
+                        checked={isAutoSync}
+                        onChange={(e) => handleToggleAutoSync(e.target.checked)}
+                        className="rounded accent-breezy-blue w-4 h-4"
+                      />
+                      <label htmlFor="autoSyncCheck" className="text-xs text-slate-300 cursor-pointer">
+                        <span className="font-medium">Tự động đồng bộ ngầm vào mã nguồn:</span> Mỗi khi thêm/sửa sản phẩm, đổi giá, đổi tag, hệ thống sẽ tự động cập nhật ngay file <code className="text-conan-gold">storeData.json</code>.
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* SECTION 2: Export & Import Source Data */}
+                  <div className="p-5 rounded-2xl bg-slate-950/60 border border-white/10 space-y-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                        <FileCode className="w-4 h-4 text-conan-gold" />
+                        BỘ CÔNG CỤ XUẤT & NHẬP DỮ LIỆU NGUỒN (EXPORT / IMPORT)
+                      </h4>
+                      <p className="text-xs text-slate-400 mt-1">
+                        Dùng khi bạn muốn sao chép mã nguồn sang máy tính khác, hoặc sao lưu tệp dữ liệu JSON của cửa hàng.
+                      </p>
+                    </div>
+
+                    <input
+                      type="file"
+                      ref={fileInputJsonRef}
+                      accept=".json"
+                      onChange={handleImportJSONFile}
+                      className="hidden"
+                    />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <button
+                        type="button"
+                        onClick={handleDownloadJSON}
+                        className="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/10 text-xs font-semibold flex flex-col items-center justify-center gap-2 transition-all hover:border-conan-gold/50"
+                      >
+                        <Download className="w-5 h-5 text-conan-gold" />
+                        <span>Tải file storeData.json</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleCopyTS}
+                        className="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/10 text-xs font-semibold flex flex-col items-center justify-center gap-2 transition-all hover:border-breezy-blue/50"
+                      >
+                        {copiedCode ? (
+                          <Check className="w-5 h-5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-5 h-5 text-breezy-blue" />
+                        )}
+                        <span>{copiedCode ? 'Đã sao chép Code!' : 'Sao chép Code TypeScript'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => fileInputJsonRef.current?.click()}
+                        className="p-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white border border-white/10 text-xs font-semibold flex flex-col items-center justify-center gap-2 transition-all hover:border-cream-sun/50"
+                      >
+                        <Upload className="w-5 h-5 text-cream-sun" />
+                        <span>Nhập file JSON từ máy</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* SECTION 3: Remote GitHub API Sync */}
+                  <div className="p-5 rounded-2xl bg-slate-950/60 border border-white/10 space-y-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-emerald-400" />
+                        ĐỒNG BỘ TRỰC TIẾP LÊN GITHUB TỪ XA (CHO BẢN WEB VERCEL / ONLINE)
+                      </h4>
+                      <p className="text-xs text-slate-400 mt-1">
+                        Khi trang web chạy online trên Vercel, bạn có thể nhập GitHub Personal Access Token để web tự động đẩy commit trực tiếp lên kho mã nguồn GitHub mà không cần chạm vào terminal!
+                      </p>
+                    </div>
+
+                    {githubMessage.text && (
+                      <div
+                        className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
+                          githubMessage.type === 'success'
+                            ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                            : 'bg-red-500/15 border-red-500/40 text-red-300'
+                        }`}
+                      >
+                        {githubMessage.type === 'success' ? (
+                          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                        ) : (
+                          <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+                        )}
+                        <span>{githubMessage.text}</span>
+                      </div>
+                    )}
+
+                    <form onSubmit={handleGitHubSync} className="space-y-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                            GitHub Repository (Tên repo) *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={githubRepo}
+                            onChange={(e) => setGithubRepo(e.target.value)}
+                            placeholder="Ví dụ: danglio/conan-order-tracker"
+                            className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/10 text-white font-mono text-xs focus:border-conan-gold focus:outline-none"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                            Nhánh GitHub (Branch)
+                          </label>
+                          <input
+                            type="text"
+                            value={githubBranch}
+                            onChange={(e) => setGithubBranch(e.target.value)}
+                            placeholder="main"
+                            className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/10 text-white font-mono text-xs focus:border-conan-gold focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-[11px] font-medium text-slate-300">
+                            GitHub Personal Access Token (PAT) *
+                          </label>
+                          <a
+                            href="https://github.com/settings/tokens/new?scopes=repo&description=Conan+Web+Sync"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] text-breezy-blue hover:underline flex items-center gap-1"
+                          >
+                            <span>Tạo Token GitHub</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
+                        <input
+                          type="password"
+                          required
+                          value={githubToken}
+                          onChange={(e) => setGithubToken(e.target.value)}
+                          placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                          className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/10 text-white font-mono text-xs focus:border-conan-gold focus:outline-none"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isGitHubSyncing}
+                        className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-teal-600 hover:to-emerald-600 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        <span>
+                          {isGitHubSyncing ? 'Đang đẩy lên GitHub Repository...' : '🚀 ĐẨY COMMIT TRỰC TIẾP LÊN GITHUB REPOSITORY'}
+                        </span>
+                      </button>
+                    </form>
+                  </div>
                 </div>
               )}
             </div>

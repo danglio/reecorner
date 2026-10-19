@@ -6,132 +6,31 @@ import type {
   OrderStatusConfig,
   ProductRarity,
 } from '../types';
+import storeData from '../data/storeData.json';
 
 export const STORAGE_KEYS = {
   PRODUCTS: 'conan_products',
   ORDERS: 'conan_orders',
   SETTINGS: 'conan_settings',
+  DATA_VERSION: 'conan_data_version',
+  DATA_UPDATED_AT: 'conan_data_updated_at',
+  LAST_SYNC: 'conan_last_sync_time',
+  AUTO_SYNC: 'conan_auto_sync_to_source',
+  GITHUB_CONFIG: 'conan_github_sync_config',
 } as const;
 
-// 1. Initial Mock Data
-export const INITIAL_PRODUCTS: Product[] = [
-  {
-    id: 'prod-1',
-    name: 'Hộp Thẻ Bài Conan Cao Cấp - Vụ Án Thế Kỷ',
-    price: 350000,
-    originalPrice: 420000,
-    rarity: 'SSR',
-    image:
-      'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80',
-    description:
-      'Hộp thẻ bài Conan phiên bản đặc biệt kỷ niệm vụ án thế kỷ. Bao gồm 10 pack thẻ bài chất lượng cao, cơ hội mở trúng thẻ chữ ký mạ vàng của tác giả Gosho Aoyama và thẻ 3D Hologram siêu hiếm.',
-    inStock: true,
-    rating: 5.0,
-  },
-  {
-    id: 'prod-2',
-    name: 'Thẻ Hologram Giới Hạn: Conan & Siêu Đạo Chích Kid',
-    price: 180000,
-    originalPrice: 220000,
-    rarity: 'UR',
-    image:
-      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-    description:
-      'Thẻ bài Hologram ánh kim độc quyền tái hiện cuộc đấu trí kinh điển dưới ánh trăng Tokyo giữa Edogawa Conan và Kaitou Kid (1412). Phủ màng bảo vệ 3D chống trầy xước, ánh quang 7 màu rực rỡ.',
-    inStock: true,
-    rating: 4.9,
-  },
-  {
-    id: 'prod-3',
-    name: 'Huy Hiệu Đội Thám Tử Nhí Tích Hợp Bộ Đàm',
-    price: 120000,
-    originalPrice: 150000,
-    rarity: 'DETECTIVE',
-    image:
-      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
-    description:
-      'Bảo bối kinh điển của Tiến sĩ Agasa dành riêng cho Đội Thám Tử Nhí Lớp 1B. Chất liệu hợp kim mạ vàng ánh đồng sắc sảo, tích hợp mô hình bộ đàm liên lạc và kim cài áo tiện lợi.',
-    inStock: true,
-    rating: 4.8,
-  },
-  {
-    id: 'prod-4',
-    name: 'Nơ Biến Đổi Giọng Nói Mori Kogoro Special Edition',
-    price: 250000,
-    originalPrice: 300000,
-    rarity: 'SSR',
-    image:
-      'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&auto=format&fit=crop&q=80',
-    description:
-      'Vũ khí phá án số một của Conan - Chiếc nơ biến đổi giọng nói phong cách Mori Kogoro "Ngủ Gật". Vải nhung đỏ rực rỡ, trang bị núm xoay điều chỉnh tần số âm thanh cơ học chuẩn tỉ lệ 1:1.',
-    inStock: true,
-    rating: 4.9,
-  },
-];
-
-export const INITIAL_ORDERS: Order[] = [
-  {
-    id: 'CONAN-001',
-    customerName: 'Kudo Shinichi',
-    phone: '0901234567',
-    address: 'Văn phòng Thám tử Mori, Số 5 Phố Beika, Tokyo (Giao về 221B Baker St, Quận 1, TP.HCM)',
-    note: 'Vui lòng giao hàng giờ hành chính, bọc chống sốc thẻ bài giúp mình nhé!',
-    items: [
-      {
-        productId: 'prod-1',
-        productName: 'Hộp Thẻ Bài Conan Cao Cấp - Vụ Án Thế Kỷ',
-        productImage:
-          'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80',
-        price: 350000,
-        quantity: 1,
-      },
-      {
-        productId: 'prod-2',
-        productName: 'Thẻ Hologram Giới Hạn: Conan & Siêu Đạo Chích Kid',
-        productImage:
-          'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-        price: 180000,
-        quantity: 1,
-      },
-    ],
-    subtotal: 530000,
-    shippingFee: 0,
-    discount: 0,
-    total: 530000,
-    status: 'shipping',
-    createdAt: '2026-10-10 09:30',
-  },
-  {
-    id: 'KID-1412',
-    customerName: 'Kuroba Kaito',
-    phone: '0988888888',
-    address: 'Tháp Đồng Hồ Beika, Tokyo (Giao về Tòa nhà Landmark 81, Quận Bình Thạnh, TP.HCM)',
-    note: 'Hẹn gặp lúc trăng tròn. Hãy bảo vệ báu vật thật kỹ!',
-    items: [
-      {
-        productId: 'prod-2',
-        productName: 'Thẻ Hologram Giới Hạn: Conan & Siêu Đạo Chích Kid',
-        productImage:
-          'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-        price: 180000,
-        quantity: 1,
-      },
-    ],
-    subtotal: 180000,
-    shippingFee: 0,
-    discount: 0,
-    total: 180000,
-    status: 'delivered',
-    createdAt: '2026-10-09 14:12',
-  },
-];
-
-export const INITIAL_SETTINGS: AppSettings = {
+// 1. Initial Source Data from storeData.json (Source of truth)
+export const INITIAL_PRODUCTS: Product[] = (storeData.products || []) as Product[];
+export const INITIAL_ORDERS: Order[] = (storeData.orders || []) as Order[];
+export const INITIAL_SETTINGS: AppSettings = (storeData.settings || {
   zaloPhone: '0901234567',
   facebookUrl: 'https://www.facebook.com/share/1EbKBvvmf9/?mibextid=wwXIfr',
   adminPin: '1412',
   customTags: ['Bảo Bối Agasa', 'Bản Giới Hạn', 'Bán Chạy', 'Mới Nhất', 'SSR', 'UR'],
-};
+}) as AppSettings;
+
+export const STORE_DATA_VERSION = storeData.version || '1.0.1';
+export const STORE_DATA_LAST_UPDATED = storeData.lastUpdated || new Date().toISOString();
 
 // 2. Formatters & Helpers
 export function formatVND(amount: number): string {
@@ -306,10 +205,42 @@ function setStorageItem<T>(key: string, value: T): void {
   }
 }
 
-// 4. Products API
+// 4. Source Version Check & Auto Sync to Local
+export function checkAndUpdateFromSource(force: boolean = false): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const savedVersion = window.localStorage.getItem(STORAGE_KEYS.DATA_VERSION);
+    const savedUpdatedAt = window.localStorage.getItem(STORAGE_KEYS.DATA_UPDATED_AT);
+
+    const isNewer =
+      !savedVersion ||
+      savedVersion !== STORE_DATA_VERSION ||
+      (savedUpdatedAt && new Date(STORE_DATA_LAST_UPDATED) > new Date(savedUpdatedAt));
+
+    if (force || isNewer) {
+      setStorageItem(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
+      setStorageItem(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
+      setStorageItem(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
+      window.localStorage.setItem(STORAGE_KEYS.DATA_VERSION, STORE_DATA_VERSION);
+      window.localStorage.setItem(STORAGE_KEYS.DATA_UPDATED_AT, STORE_DATA_LAST_UPDATED);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error('Lỗi khi kiểm tra phiên bản dữ liệu nguồn:', err);
+    return false;
+  }
+}
+
+// Auto check once when module is loaded in browser
+if (typeof window !== 'undefined') {
+  checkAndUpdateFromSource(false);
+}
+
+// 5. Products API
 export function getProducts(): Product[] {
   const cached = getStorageItem<Product[]>(STORAGE_KEYS.PRODUCTS);
-  if (cached !== null && Array.isArray(cached)) {
+  if (cached !== null && Array.isArray(cached) && cached.length > 0) {
     return cached;
   }
   setStorageItem(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
@@ -331,6 +262,7 @@ export function saveProduct(product: Product): Product {
   }
 
   setStorageItem(STORAGE_KEYS.PRODUCTS, updatedProducts);
+  triggerAutoSync();
   return productToSave;
 }
 
@@ -338,9 +270,10 @@ export function deleteProduct(id: string): void {
   const products = getProducts();
   const updatedProducts = products.filter((p) => p.id !== id);
   setStorageItem(STORAGE_KEYS.PRODUCTS, updatedProducts);
+  triggerAutoSync();
 }
 
-// 5. Orders API
+// 6. Orders API
 export function getOrders(): Order[] {
   const cached = getStorageItem<Order[]>(STORAGE_KEYS.ORDERS);
   if (cached !== null && Array.isArray(cached)) {
@@ -418,6 +351,7 @@ export function updateOrderStatus(
   const updatedOrders = [...orders];
   updatedOrders[index] = updatedOrder;
   setStorageItem(STORAGE_KEYS.ORDERS, updatedOrders);
+  triggerAutoSync();
   return updatedOrder;
 }
 
@@ -439,10 +373,11 @@ export function createOrder(orderData: Omit<Order, 'id' | 'createdAt'>): Order {
 
   const updatedOrders = [newOrder, ...orders];
   setStorageItem(STORAGE_KEYS.ORDERS, updatedOrders);
+  triggerAutoSync();
   return newOrder;
 }
 
-// 6. Settings API
+// 7. Settings API
 export function getSettings(): AppSettings {
   const cached = getStorageItem<AppSettings>(STORAGE_KEYS.SETTINGS);
   if (cached && cached.adminPin) {
@@ -459,9 +394,10 @@ export function getSettings(): AppSettings {
 
 export function saveSettings(settings: AppSettings): void {
   setStorageItem(STORAGE_KEYS.SETTINGS, settings);
+  triggerAutoSync();
 }
 
-// 7. Custom Tags Management (Cho phép tùy chỉnh & xóa bỏ hoàn toàn các mục SSR, UR...)
+// 8. Custom Tags Management
 export function getCustomTags(): string[] {
   const settings = getSettings();
   if (settings.customTags && Array.isArray(settings.customTags)) {
@@ -506,6 +442,7 @@ export function deleteCustomTag(tagToDelete: string, removeFromProducts: boolean
     });
     if (hasChanges) {
       setStorageItem(STORAGE_KEYS.PRODUCTS, updatedProducts);
+      triggerAutoSync();
     }
   }
   return updated;
@@ -528,13 +465,243 @@ export function clearAllSsrRarityTags(): string[] {
   });
   if (hasChanges) {
     setStorageItem(STORAGE_KEYS.PRODUCTS, updatedProducts);
+    triggerAutoSync();
   }
   return updated;
 }
 
-// 8. Reset Storage helper (hữu ích cho Admin / Test)
+// 9. Reset Storage helper
 export function resetStorage(): void {
   setStorageItem(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
   setStorageItem(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
   setStorageItem(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(STORAGE_KEYS.DATA_VERSION, STORE_DATA_VERSION);
+    window.localStorage.setItem(STORAGE_KEYS.DATA_UPDATED_AT, STORE_DATA_LAST_UPDATED);
+  }
+  triggerAutoSync();
+}
+
+// 10. Source Code & Git Sync Engine
+export interface SyncStatus {
+  isLocalDev: boolean;
+  connected: boolean;
+  targetFile?: string;
+  gitBranch?: string;
+  hasGitRemote?: boolean;
+  gitRemote?: string;
+  lastCommit?: string;
+}
+
+export interface SyncResult {
+  success: boolean;
+  message: string;
+  filePath?: string;
+  gitCommitted?: boolean;
+  gitPushed?: boolean;
+  timestamp?: string;
+  isLocalDev?: boolean;
+}
+
+export async function checkSyncStatus(): Promise<SyncStatus> {
+  try {
+    const res = await fetch('/api/sync-source/status', { method: 'GET' });
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    }
+  } catch {
+    // Ignore fetch error when running static
+  }
+  return {
+    isLocalDev: false,
+    connected: false,
+  };
+}
+
+export async function syncToSourceCode(): Promise<SyncResult> {
+  const currentProducts = getProducts();
+  const currentOrders = getOrders();
+  const currentSettings = getSettings();
+
+  const payload = {
+    version: `1.0.${Date.now()}`,
+    lastUpdated: new Date().toISOString(),
+    products: currentProducts,
+    orders: currentOrders,
+    settings: currentSettings,
+  };
+
+  try {
+    const res = await fetch('/api/sync-source', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(STORAGE_KEYS.DATA_VERSION, payload.version);
+        window.localStorage.setItem(STORAGE_KEYS.DATA_UPDATED_AT, payload.lastUpdated);
+        window.localStorage.setItem(STORAGE_KEYS.LAST_SYNC, new Date().toISOString());
+      }
+      return {
+        ...data,
+        isLocalDev: true,
+      };
+    } else {
+      const err = await res.json().catch(() => ({}));
+      return {
+        success: false,
+        message: err.message || `Lỗi máy chủ (${res.status})`,
+        isLocalDev: false,
+      };
+    }
+  } catch {
+    return {
+      success: false,
+      message:
+        'Không thể kết nối API máy chủ local (trang web đang chạy trên môi trường tĩnh hoặc đã deploy Vercel). Hãy dùng tính năng "Tải file dữ liệu" hoặc "Đồng bộ qua GitHub API" bên dưới!',
+      isLocalDev: false,
+    };
+  }
+}
+
+// Background auto-sync helper
+let syncTimeout: any = null;
+export function triggerAutoSync(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const isAutoSyncEnabled = window.localStorage.getItem(STORAGE_KEYS.AUTO_SYNC);
+    if (isAutoSyncEnabled === 'false') return;
+
+    if (syncTimeout) {
+      clearTimeout(syncTimeout);
+    }
+    syncTimeout = setTimeout(() => {
+      syncToSourceCode().catch(() => {});
+    }, 600);
+  } catch {
+    // Ignore
+  }
+}
+
+// Export / Import Helpers
+export function exportStoreDataJSON(): string {
+  const data = {
+    version: `1.0.${Date.now()}`,
+    lastUpdated: new Date().toISOString(),
+    products: getProducts(),
+    orders: getOrders(),
+    settings: getSettings(),
+  };
+  return JSON.stringify(data, null, 2);
+}
+
+export function importStoreDataJSON(jsonStr: string): { success: boolean; message: string } {
+  try {
+    const parsed = JSON.parse(jsonStr);
+    if (!parsed || !Array.isArray(parsed.products)) {
+      return { success: false, message: 'Tệp JSON không đúng định dạng dữ liệu cửa hàng (thiếu mảng products)!' };
+    }
+    setStorageItem(STORAGE_KEYS.PRODUCTS, parsed.products);
+    if (Array.isArray(parsed.orders)) {
+      setStorageItem(STORAGE_KEYS.ORDERS, parsed.orders);
+    }
+    if (parsed.settings && typeof parsed.settings === 'object') {
+      setStorageItem(STORAGE_KEYS.SETTINGS, { ...getSettings(), ...parsed.settings });
+    }
+    if (parsed.version) {
+      window.localStorage.setItem(STORAGE_KEYS.DATA_VERSION, parsed.version);
+    }
+    if (parsed.lastUpdated) {
+      window.localStorage.setItem(STORAGE_KEYS.DATA_UPDATED_AT, parsed.lastUpdated);
+    }
+    triggerAutoSync();
+    return { success: true, message: `Nhập thành công ${parsed.products.length} sản phẩm và cấu hình mới!` };
+  } catch (err: any) {
+    return { success: false, message: `Lỗi đọc file JSON: ${err?.message || 'Không hợp lệ'}` };
+  }
+}
+
+export function exportStoreDataTypeScript(): string {
+  const products = getProducts();
+  const orders = getOrders();
+  const settings = getSettings();
+  return `export const INITIAL_PRODUCTS: Product[] = ${JSON.stringify(products, null, 2)};\n\nexport const INITIAL_ORDERS: Order[] = ${JSON.stringify(orders, null, 2)};\n\nexport const INITIAL_SETTINGS: AppSettings = ${JSON.stringify(settings, null, 2)};`;
+}
+
+// GitHub API Direct Sync for remote deployments (e.g. Vercel)
+export interface GitHubSyncConfig {
+  token: string;
+  repo: string; // e.g. "danglio/conan-order-tracker"
+  branch?: string; // default "main"
+}
+
+export async function syncToGitHubRepo(config: GitHubSyncConfig): Promise<{ success: boolean; message: string }> {
+  try {
+    const branch = config.branch || 'main';
+    const filePath = 'src/data/storeData.json';
+    const cleanRepo = config.repo.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\.git$/, '');
+    const apiUrl = `https://api.github.com/repos/${cleanRepo}/contents/${filePath}`;
+
+    // 1. Get current file SHA on GitHub
+    const getRes = await fetch(`${apiUrl}?ref=${branch}`, {
+      headers: {
+        Authorization: `token ${config.token.trim()}`,
+        Accept: 'application/vnd.github.v3+json',
+      },
+    });
+
+    let sha: string | undefined;
+    if (getRes.ok) {
+      const fileData = await getRes.json();
+      sha = fileData.sha;
+    }
+
+    // 2. Prepare payload
+    const content = exportStoreDataJSON();
+    const encodedContent = btoa(unescape(encodeURIComponent(content)));
+
+    const body: any = {
+      message: 'chore(data): sync admin updates from web interface to GitHub repository',
+      content: encodedContent,
+      branch,
+    };
+    if (sha) {
+      body.sha = sha;
+    }
+
+    // 3. Put updated file to GitHub repo
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        Authorization: `token ${config.token.trim()}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (putRes.ok) {
+      return {
+        success: true,
+        message: `Đã đẩy thành công lên kho GitHub ${cleanRepo} (nhánh ${branch})! Vercel sẽ tự động build và deploy bản mới nhất.`,
+      };
+    } else {
+      const errData = await putRes.json().catch(() => ({}));
+      return {
+        success: false,
+        message: `GitHub trả về lỗi (${putRes.status}): ${errData.message || 'Token không có quyền hoặc repo không tồn tại'}`,
+      };
+    }
+  } catch (err: any) {
+    return {
+      success: false,
+      message: `Lỗi kết nối GitHub API: ${err?.message || 'Không xác định'}`,
+    };
+  }
 }
