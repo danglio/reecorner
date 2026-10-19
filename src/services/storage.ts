@@ -237,6 +237,43 @@ if (typeof window !== 'undefined') {
   checkAndUpdateFromSource(false);
 }
 
+// 4.1. Real-time Live Cloud Sync from GitHub
+export async function fetchLatestFromGitHub(onUpdated?: () => void): Promise<boolean> {
+  if (typeof window === 'undefined') return false;
+  try {
+    const rawUrl = `https://raw.githubusercontent.com/danglio/reecorner/main/src/data/storeData.json?t=${Date.now()}`;
+    const res = await fetch(rawUrl);
+    if (!res.ok) return false;
+    const remoteData = await res.json();
+    if (!remoteData || !Array.isArray(remoteData.products)) return false;
+
+    const currentVersion = window.localStorage.getItem(STORAGE_KEYS.DATA_VERSION);
+    const currentUpdatedAt = window.localStorage.getItem(STORAGE_KEYS.DATA_UPDATED_AT);
+
+    const isNewer =
+      !currentVersion ||
+      currentVersion !== remoteData.version ||
+      (currentUpdatedAt && new Date(remoteData.lastUpdated) > new Date(currentUpdatedAt));
+
+    if (isNewer) {
+      setStorageItem(STORAGE_KEYS.PRODUCTS, remoteData.products);
+      if (Array.isArray(remoteData.orders)) {
+        setStorageItem(STORAGE_KEYS.ORDERS, remoteData.orders);
+      }
+      if (remoteData.settings) {
+        setStorageItem(STORAGE_KEYS.SETTINGS, { ...getSettings(), ...remoteData.settings });
+      }
+      window.localStorage.setItem(STORAGE_KEYS.DATA_VERSION, remoteData.version);
+      window.localStorage.setItem(STORAGE_KEYS.DATA_UPDATED_AT, remoteData.lastUpdated);
+      onUpdated?.();
+      return true;
+    }
+  } catch {
+    // Offline or network error
+  }
+  return false;
+}
+
 // 5. Products API
 export function getProducts(): Product[] {
   const cached = getStorageItem<Product[]>(STORAGE_KEYS.PRODUCTS);

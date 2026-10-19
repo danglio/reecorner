@@ -7,7 +7,7 @@ import CartDrawer, { CartItem } from './components/CartDrawer';
 import AudioPlayer, { triggerPlayConanBGM } from './components/AudioPlayer';
 import AdminPanel from './components/AdminPanel';
 import { Product, Order } from './types';
-import { getSettings } from './services/storage';
+import { getSettings, fetchLatestFromGitHub } from './services/storage';
 import { Phone, Shield, Sparkles, Heart } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -52,6 +52,13 @@ export const App: React.FC = () => {
       console.warn('Cannot persist cart:', err);
     }
   }, [cart]);
+
+  // Live real-time sync with latest GitHub data
+  useEffect(() => {
+    fetchLatestFromGitHub(() => {
+      setDataVersion(v => v + 1);
+    });
+  }, []);
 
   // Cart actions
   const handleAddToCart = (product: Product) => {
