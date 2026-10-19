@@ -513,6 +513,24 @@ export async function checkSyncStatus(): Promise<SyncStatus> {
   } catch {
     // Ignore fetch error when running static
   }
+
+  // Check Vercel serverless API
+  try {
+    const vRes = await fetch('/api/sync-to-github', { method: 'GET' });
+    if (vRes.ok) {
+      const vData = await vRes.json();
+      return {
+        isLocalDev: false,
+        connected: Boolean(vData.configured),
+        gitBranch: vData.branch || 'main',
+        hasGitRemote: true,
+        gitRemote: vData.repo,
+      };
+    }
+  } catch {
+    // Ignore
+  }
+
   return {
     isLocalDev: false,
     connected: false,
@@ -532,6 +550,7 @@ export async function syncToSourceCode(): Promise<SyncResult> {
     settings: currentSettings,
   };
 
+  // 1. Try local dev server API (/api/sync-source)
   try {
     const res = await fetch('/api/sync-source', {
       method: 'POST',
@@ -552,22 +571,55 @@ export async function syncToSourceCode(): Promise<SyncResult> {
         ...data,
         isLocalDev: true,
       };
-    } else {
-      const err = await res.json().catch(() => ({}));
-      return {
-        success: false,
-        message: err.message || `Lỗi máy chủ (${res.status})`,
-        isLocalDev: false,
-      };
     }
   } catch {
-    return {
-      success: false,
-      message:
-        'Không thể kết nối API máy chủ local (trang web đang chạy trên môi trường tĩnh hoặc đã deploy Vercel). Hãy dùng tính năng "Tải file dữ liệu" hoặc "Đồng bộ qua GitHub API" bên dưới!',
-      isLocalDev: false,
-    };
+    // Local dev endpoint not available, proceed to Vercel GitHub sync
   }
+
+  // 2. Try Vercel Serverless Function (/api/sync-to-github)
+  try {
+    const vRes = await fetch('/api/sync-to-github', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (vRes.ok) {
+      const vData = await vRes.json();
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(STORAGE_KEYS.DATA_VERSION, payload.version);
+        window.localStorage.setItem(STORAGE_KEYS.DATA_UPDATED_AT, payload.lastUpdated);
+        window.localStorage.setItem(STORAGE_KEYS.LAST_SYNC, new Date().toISOString());
+      }
+      return {
+        success: true,
+        message: vData.message || 'Đã lưu và commit trực tiếp lên GitHub! Vercel sẽ tự động build lại.',
+        gitCommitted: true,
+        gitPushed: true,
+        isLocalDev: false,
+      };
+    } else {
+      const vErr = await vRes.json().catch(() => ({}));
+      if (vRes.status !== 404 && vErr.message) {
+        return {
+          success: false,
+          message: vErr.message,
+          isLocalDev: false,
+        };
+      }
+    }
+  } catch {
+    // Ignore
+  }
+
+  return {
+    success: false,
+    message:
+      'Chưa cấu hình tự động đẩy GitHub trên Vercel. Bạn có thể dùng tính năng "Tải file dữ liệu" hoặc nhập GitHub Token ở tab Mã Nguồn!',
+    isLocalDev: false,
+  };
 }
 
 // Background auto-sync helper
