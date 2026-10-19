@@ -10,9 +10,11 @@ import {
   Tag,
   Package,
   Layers,
+  Box,
 } from 'lucide-react';
 import type { Product, ProductRarity } from '../types';
 import { getProducts, getRarityBadgeInfo, formatVND } from '../services/storage';
+import ProductCard3DModal from './ProductCard3DModal';
 
 export interface ShopCatalogProps {
   onAddToCart: (product: Product) => void;
@@ -31,6 +33,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedRarity, setSelectedRarity] = useState<RarityFilter>('ALL');
   const [addedId, setAddedId] = useState<string | null>(null);
+  const [selectedProductIndex, setSelectedProductIndex] = useState<number | null>(null);
 
   // Load products from storage if not provided via props
   useEffect(() => {
@@ -255,7 +258,7 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => {
+          {filteredProducts.map((product, productIdx) => {
             const rarityInfo = getRarityBadgeInfo(product.rarity);
             const isAdded = addedId === product.id;
             const discountPercent =
@@ -275,8 +278,12 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                 {/* Breezy Blue & Cream Sun Accent Border */}
                 <div className="h-1 w-full bg-gradient-to-r from-breezy-blue via-cream-sun to-breezy-blue" />
 
-                {/* Card Image Wrapper */}
-                <div className="relative w-full aspect-[4/3] bg-slate-950 overflow-hidden">
+                {/* Card Image Wrapper with 3D Preview Trigger */}
+                <div
+                  onClick={() => setSelectedProductIndex(productIdx)}
+                  className="relative w-full aspect-[4/3] bg-slate-950 overflow-hidden cursor-pointer group/img"
+                  title="Bấm để xem thẻ bài xoay 3D tương tác"
+                >
                   <img
                     src={product.image}
                     alt={product.name}
@@ -293,16 +300,20 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#051F45] via-transparent to-transparent opacity-70" />
 
-                  {/* Top Badges */}
-                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-                    {rarityInfo ? (
+                  {/* 3D Interactive Badge (Faithful to reference image) */}
+                  <div className="absolute top-3 left-3 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-cream-sun text-[10px] font-black tracking-wider uppercase shadow-md group-hover/img:bg-breezy-blue group-hover/img:text-navy-night transition-colors">
+                    <Box className="w-3 h-3" />
+                    <span>3D</span>
+                  </div>
+
+                  {/* Top Right Badges */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5 pointer-events-none">
+                    {rarityInfo && (
                       <span
-                        className={`px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wider uppercase backdrop-blur-md shadow-md ${rarityInfo.badgeClass}`}
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase backdrop-blur-md shadow-md ${rarityInfo.badgeClass}`}
                       >
                         {rarityInfo.label}
                       </span>
-                    ) : (
-                      <span />
                     )}
 
                     {discountPercent > 0 && (
@@ -338,8 +349,12 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                 {/* Card Content - Faithful to right mockup in photo */}
                 <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3.5">
                   <div className="space-y-1.5">
-                    {/* 1. Title in pure white */}
-                    <h3 className="font-outfit font-extrabold text-white text-base sm:text-lg group-hover:text-breezy-blue transition-colors line-clamp-2 leading-snug">
+                    {/* 1. Title in pure white (Click to open 3D Modal) */}
+                    <h3
+                      onClick={() => setSelectedProductIndex(productIdx)}
+                      className="font-outfit font-extrabold text-white text-base sm:text-lg group-hover:text-breezy-blue transition-colors line-clamp-2 leading-snug cursor-pointer"
+                      title="Bấm để xem thẻ bài xoay 3D tương tác"
+                    >
                       {product.name}
                     </h3>
                     {/* 2. Subtitle: Rarity & BreeCorner */}
@@ -358,9 +373,12 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
                   </div>
 
                   <div className="space-y-2.5 pt-1">
-                    {/* 3. Action Button: ĐẶT ĐƠN (Pill Outline Border Breezy Blue chuẩn mockup) */}
+                    {/* 3. Action Button: ĐẶT ĐƠN */}
                     <button
-                      onClick={() => handleBuyNow(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBuyNow(product);
+                      }}
                       disabled={!product.inStock}
                       className="w-full py-2.5 px-4 rounded-full border-2 border-breezy-blue bg-navy-night/70 hover:bg-breezy-blue text-breezy-blue hover:text-navy-night font-black text-sm tracking-widest uppercase transition-all duration-200 shadow-md shadow-breezy-blue/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
                     >
@@ -370,9 +388,12 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
 
                     {/* Secondary Add to Cart button */}
                     <button
-                      onClick={() => handleAddToCart(product)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(product);
+                      }}
                       disabled={!product.inStock}
-                      className={`w-full py-1.5 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 ${
+                      className={`w-full py-1.5 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer ${
                         isAdded
                           ? 'bg-emerald-600 text-white border-emerald-500'
                           : 'bg-white/5 text-slate-300 border-white/10 hover:border-cream-sun hover:text-cream-sun'
@@ -415,6 +436,17 @@ export const ShopCatalog: React.FC<ShopCatalogProps> = ({
           })}
         </div>
       )}
+
+      {/* 3D Product Card Detail Modal */}
+      <ProductCard3DModal
+        isOpen={selectedProductIndex !== null}
+        onClose={() => setSelectedProductIndex(null)}
+        products={filteredProducts.length > 0 ? filteredProducts : products}
+        currentProductIndex={selectedProductIndex ?? 0}
+        onSelectProductIndex={(idx) => setSelectedProductIndex(idx)}
+        onAddToCart={onAddToCart}
+        onBuyNow={onBuyNow}
+      />
     </div>
   );
 };
