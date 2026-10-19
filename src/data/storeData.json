@@ -1,0 +1,25 @@
+{
+  "version": "1.0.test",
+  "lastUpdated": "2026-10-19T23:43:00.000Z",
+  "products": [
+    {
+      "id": "prod-1",
+      "name": "Hộp Thẻ Bài Conan Cao Cấp - Vụ Án Thế Kỷ",
+      "price": 350000,
+      "rarity": "SSR",
+      "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80",
+      "description": "Hộp thẻ bài cao cấp",
+      "inStock": true,
+      "rating": 5
+    }
+  ],
+  "orders": [],
+  "settings": {
+    "zaloPhone": "0901234567",
+    "facebookUrl": "https://facebook.com",
+    "adminPin": "1412",
+    "customTags": [
+      "SSR"
+    ]
+  }
+}
