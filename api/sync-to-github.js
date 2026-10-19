@@ -84,6 +84,11 @@ export default async function handler(req, res) {
     });
 
     if (putRes.ok) {
+      // Trigger Vercel Deploy Hook if configured
+      if (process.env.VERCEL_DEPLOY_HOOK_URL) {
+        fetch(process.env.VERCEL_DEPLOY_HOOK_URL, { method: 'POST' }).catch(() => {});
+      }
+
       return res.status(200).json({
         success: true,
         message: 'Đã lưu và commit trực tiếp lên mã nguồn GitHub! Vercel đang tự động build và deploy bản mới nhất.',
