@@ -50,11 +50,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 
-  const token = process.env.GITHUB_TOKEN;
-  const repo = process.env.GITHUB_REPO;
-  const branch = process.env.GITHUB_BRANCH || 'main';
-
-  if (!token || !repo) {
+  if (!token || !process.env.GITHUB_REPO) {
     return res.status(500).json({
       success: false,
       message: 'Chưa cấu hình biến môi trường GITHUB_TOKEN và GITHUB_REPO trên Vercel!',
