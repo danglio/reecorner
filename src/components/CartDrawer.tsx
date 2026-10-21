@@ -157,15 +157,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const validateForm = (): boolean => {
     const newErrors: { name?: string; phone?: string; address?: string } = {};
-    if (!customerName.trim()) {
-      newErrors.name = 'Vui lòng nhập họ và tên của bạn';
-    }
+    
+    // Bỏ bắt buộc: Các thông tin giao hàng đều là tùy chọn khi đặt đơn qua FB
+    // Nếu khách có nhập số điện thoại thì mới kiểm tra độ dài tối thiểu
     const cleanPhone = phone.trim().replace(/[^0-9]/g, '');
-    if (!cleanPhone || cleanPhone.length < 9) {
+    if (phone.trim() && cleanPhone.length < 9) {
       newErrors.phone = 'Vui lòng nhập số điện thoại hợp lệ (tối thiểu 9-10 chữ số)';
-    }
-    if (!address.trim()) {
-      newErrors.address = 'Vui lòng nhập địa chỉ nhận hàng';
     }
 
     setErrors(newErrors);
@@ -196,9 +193,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
       // 3. Persist order to storage
       const newOrder = createOrder({
-        customerName: customerName.trim(),
-        phone: phone.trim(),
-        address: address.trim(),
+        customerName: customerName.trim() || 'Khách hàng',
+        phone: phone.trim() || 'Chưa cung cấp',
+        address: address.trim() || 'Chưa cung cấp',
         note: note.trim() || undefined,
         items: orderItems,
         subtotal: subtotal,
@@ -230,7 +227,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 ${itemsListText}
 ------------------------------------
 💰 TỔNG THANH TOÁN: ${formatVND(newOrder.total)}
-🚚 Phí vận chuyển: Miễn phí toàn quốc
 ====================================
 👉 Nhờ shop xác nhận và gửi hàng giúp mình nhé!
 🔍 Tra cứu trạng thái đơn tại web với mã: ${newOrder.id}`;
@@ -550,7 +546,7 @@ ${itemsListText}
                   {/* Customer Name */}
                   <div className="space-y-1">
                     <label className="text-xs text-slate-300 font-medium flex items-center justify-between">
-                      <span>Họ và tên người nhận *</span>
+                      <span>Họ và tên người nhận</span>
                     </label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -580,7 +576,7 @@ ${itemsListText}
                   {/* Phone */}
                   <div className="space-y-1">
                     <label className="text-xs text-slate-300 font-medium">
-                      Số điện thoại nhận hàng *
+                      Số điện thoại nhận hàng
                     </label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -610,7 +606,7 @@ ${itemsListText}
                   {/* Address */}
                   <div className="space-y-1">
                     <label className="text-xs text-slate-300 font-medium">
-                      Địa chỉ nhận hàng chi tiết *
+                      Địa chỉ nhận hàng chi tiết
                     </label>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
@@ -666,10 +662,6 @@ ${itemsListText}
                 <div className="flex justify-between">
                   <span className="text-slate-400">Tạm tính:</span>
                   <span className="font-semibold text-white">{formatVND(subtotal)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Phí vận chuyển:</span>
-                  <span className="text-emerald-400 font-medium">Miễn phí toàn quốc</span>
                 </div>
                 <div className="flex justify-between items-baseline pt-2 border-t border-white/10">
                   <span className="font-bold text-white text-sm">Tổng cộng:</span>

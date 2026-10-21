@@ -1,3 +1,5 @@
+let memoryStoreData = null;
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -7,13 +9,39 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
+  const token = process.env.GITHUB_TOKEN;
+  const repo = process.env.GITHUB_REPO || 'danglio/reecorner';
+  const branch = process.env.GITHUB_BRANCH || 'main';
+
   if (req.method === 'GET') {
     const hasToken = Boolean(process.env.GITHUB_TOKEN);
-    const repo = process.env.GITHUB_REPO || '';
-    const branch = process.env.GITHUB_BRANCH || 'main';
+
+    // Trả về dữ liệu sản phẩm mới nhất lập tức cho người xem (bỏ qua cache 5 phút của Fastly/GitHub Raw)
+    if (req.query && (req.query.data || req.query.action === 'data')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      if (memoryStoreData && Array.isArray(memoryStoreData.products)) {
+        return res.status(200).json(memoryStoreData);
+      }
+
+      const cleanRepo = repo.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\.git$/, '');
+      const rawUrl = `https://raw.githubusercontent.com/${cleanRepo}/${branch}/src/data/storeData.json?t=${Date.now()}`;
+      try {
+        const rawRes = await fetch(rawUrl, {
+          headers: token ? { Authorization: `token ${token.trim()}` } : {},
+        });
+        if (rawRes.ok) {
+          const freshData = await rawRes.json();
+          if (freshData && Array.isArray(freshData.products)) {
+            memoryStoreData = freshData;
+            return res.status(200).json(freshData);
+          }
+        }
+      } catch (err) {}
+    }
+
     return res.status(200).json({
-      configured: hasToken && Boolean(repo),
-      repo,
+      configured: hasToken && Boolean(process.env.GITHUB_REPO),
+      repo: process.env.GITHUB_REPO || '',
       branch,
     });
   }
@@ -84,6 +112,8 @@ export default async function handler(req, res) {
     });
 
     if (putRes.ok) {
+      memoryStoreData = payload;
+
       // Trigger Vercel Deploy Hook if configured
       if (process.env.VERCEL_DEPLOY_HOOK_URL) {
         fetch(process.env.VERCEL_DEPLOY_HOOK_URL, { method: 'POST' }).catch(() => {});

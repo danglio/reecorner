@@ -212,10 +212,12 @@ export function checkAndUpdateFromSource(force: boolean = false): boolean {
     const savedVersion = window.localStorage.getItem(STORAGE_KEYS.DATA_VERSION);
     const savedUpdatedAt = window.localStorage.getItem(STORAGE_KEYS.DATA_UPDATED_AT);
 
+    // Chỉ ghi đè khi chưa từng có dữ liệu hoặc file bundle thực sự mới hơn dữ liệu đã lưu
+    // Tuyệt đối không xóa dữ liệu chỉ vì chuỗi version khác nhau (tránh ghi đè admin cập nhật)
     const isNewer =
       !savedVersion ||
-      savedVersion !== STORE_DATA_VERSION ||
-      (savedUpdatedAt && new Date(STORE_DATA_LAST_UPDATED) > new Date(savedUpdatedAt));
+      !savedUpdatedAt ||
+      (STORE_DATA_LAST_UPDATED && savedUpdatedAt && new Date(STORE_DATA_LAST_UPDATED) > new Date(savedUpdatedAt));
 
     if (force || isNewer) {
       setStorageItem(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
@@ -237,23 +239,43 @@ if (typeof window !== 'undefined') {
   checkAndUpdateFromSource(false);
 }
 
-// 4.1. Real-time Live Cloud Sync from GitHub
+// 4.1. Real-time Live Cloud Sync from GitHub & Vercel API
 export async function fetchLatestFromGitHub(onUpdated?: () => void): Promise<boolean> {
   if (typeof window === 'undefined') return false;
   try {
-    const rawUrl = `https://raw.githubusercontent.com/danglio/reecorner/main/src/data/storeData.json?t=${Date.now()}`;
-    const res = await fetch(rawUrl);
-    if (!res.ok) return false;
-    const remoteData = await res.json();
+    let remoteData: any = null;
+
+    // 1. Thử gọi API Serverless Vercel trước (không bị dính cache 5 phút của Fastly CDN trên GitHub Raw)
+    try {
+      const apiRes = await fetch(`/api/sync-to-github?data=1&t=${Date.now()}`, {
+        headers: { 'Cache-Control': 'no-cache' },
+      });
+      if (apiRes.ok) {
+        remoteData = await apiRes.json();
+      }
+    } catch {
+      // Bỏ qua nếu chạy môi trường tĩnh không có Vercel API
+    }
+
+    // 2. Dự phòng: Đọc trực tiếp từ GitHub Raw
+    if (!remoteData || !Array.isArray(remoteData.products)) {
+      const rawUrl = `https://raw.githubusercontent.com/danglio/reecorner/main/src/data/storeData.json?t=${Date.now()}`;
+      const res = await fetch(rawUrl);
+      if (res.ok) {
+        remoteData = await res.json();
+      }
+    }
+
     if (!remoteData || !Array.isArray(remoteData.products)) return false;
 
     const currentVersion = window.localStorage.getItem(STORAGE_KEYS.DATA_VERSION);
     const currentUpdatedAt = window.localStorage.getItem(STORAGE_KEYS.DATA_UPDATED_AT);
 
+    // Chỉ cập nhật khi máy khách chưa có dữ liệu hoặc cloud có mốc thời gian mới hơn
     const isNewer =
       !currentVersion ||
-      currentVersion !== remoteData.version ||
-      (currentUpdatedAt && new Date(remoteData.lastUpdated) > new Date(currentUpdatedAt));
+      !currentUpdatedAt ||
+      (remoteData.lastUpdated && new Date(remoteData.lastUpdated) > new Date(currentUpdatedAt));
 
     if (isNewer) {
       setStorageItem(STORAGE_KEYS.PRODUCTS, remoteData.products);
@@ -263,8 +285,8 @@ export async function fetchLatestFromGitHub(onUpdated?: () => void): Promise<boo
       if (remoteData.settings) {
         setStorageItem(STORAGE_KEYS.SETTINGS, { ...getSettings(), ...remoteData.settings });
       }
-      window.localStorage.setItem(STORAGE_KEYS.DATA_VERSION, remoteData.version);
-      window.localStorage.setItem(STORAGE_KEYS.DATA_UPDATED_AT, remoteData.lastUpdated);
+      window.localStorage.setItem(STORAGE_KEYS.DATA_VERSION, remoteData.version || `1.0.${Date.now()}`);
+      window.localStorage.setItem(STORAGE_KEYS.DATA_UPDATED_AT, remoteData.lastUpdated || new Date().toISOString());
       onUpdated?.();
       return true;
     }

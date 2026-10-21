@@ -536,16 +536,14 @@ export const OrderStatusView: React.FC<OrderStatusViewProps> = ({
                     <span className="text-slate-200 font-mono">{formatVND(currentOrder.subtotal)}</span>
                   </div>
 
-                  <div className="flex justify-between text-slate-400">
-                    <span>Phí vận chuyển:</span>
-                    <span className="text-slate-200 font-mono">
-                      {currentOrder.shippingFee === 0 ? (
-                        <span className="text-emerald-400 font-semibold">Miễn phí</span>
-                      ) : (
-                        formatVND(currentOrder.shippingFee)
-                      )}
-                    </span>
-                  </div>
+                  {currentOrder.shippingFee > 0 && (
+                    <div className="flex justify-between text-slate-400">
+                      <span>Phí vận chuyển:</span>
+                      <span className="text-slate-200 font-mono">
+                        {formatVND(currentOrder.shippingFee)}
+                      </span>
+                    </div>
+                  )}
 
                   {currentOrder.discount > 0 && (
                     <div className="flex justify-between text-conan-red">

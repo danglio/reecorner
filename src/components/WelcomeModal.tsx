@@ -139,18 +139,12 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
     });
   };
 
-  // Validate form inputs
+  // Validate form inputs (Bỏ bắt buộc, các thông tin đều là tùy chọn)
   const validateForm = (): boolean => {
     const newErrors: { customerName?: string; phone?: string } = {};
 
-    if (!customerName.trim()) {
-      newErrors.customerName = 'Vui lòng nhập họ và tên của bạn';
-    }
-
     const cleanPhone = phone.trim().replace(/[^0-9]/g, '');
-    if (!phone.trim()) {
-      newErrors.phone = 'Vui lòng nhập số điện thoại để shop liên hệ';
-    } else if (cleanPhone.length < 9 || cleanPhone.length > 11) {
+    if (phone.trim() && (cleanPhone.length < 9 || cleanPhone.length > 11)) {
       newErrors.phone = 'Số điện thoại không hợp lệ (cần 9 - 11 chữ số)';
     }
 
@@ -205,8 +199,8 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
     const orderDetails = [
       '🕵️ [BREECORNER X CONAN SHOP] ĐẶT HÀNG / TƯ VẤN NHANH',
       '─────────────────────────────────────',
-      `👤 Khách hàng: ${customerName.trim()}`,
-      `📞 Số điện thoại: ${phone.trim()}`,
+      `👤 Khách hàng: ${customerName.trim() || 'Khách hàng'}`,
+      `📞 Số điện thoại: ${phone.trim() || '(Chưa cung cấp)'}`,
       `📍 Địa chỉ giao hàng: ${addressSection}`,
       '─────────────────────────────────────',
       '📦 Vật phẩm quan tâm:',
@@ -320,10 +314,10 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
               Đặt Hàng / Đăng Ký Tư Vấn Nhanh Qua Facebook
             </h2>
 
-            {/* Field: Full Name (Mandatory) */}
+            {/* Field: Full Name */}
             <div className="space-y-1 mb-3.5">
               <label htmlFor="customer-name-input" className="block text-xs font-semibold text-slate-200">
-                Họ & Tên khách hàng <span className="text-conan-red">*</span>
+                Họ & Tên khách hàng
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -355,10 +349,10 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
               )}
             </div>
 
-            {/* Field: Phone Number (Mandatory) */}
+            {/* Field: Phone Number */}
             <div className="space-y-1 mb-3.5">
               <label htmlFor="customer-phone-input" className="block text-xs font-semibold text-slate-200">
-                Số điện thoại liên hệ <span className="text-conan-red">*</span>
+                Số điện thoại liên hệ
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
